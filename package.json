@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed": "tsx src/scripts/seed.ts",
-    "test:workflows": "tsx src/scripts/test-workflows.ts"
+    "test:workflows": "tsx src/scripts/test-workflows.ts",
+    "test:live": "tsx src/scripts/test-live-server.ts",
+    "test": "npm run test:workflows && npm run test:live"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
