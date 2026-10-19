@@ -13,10 +13,6 @@ export async function GET(
     const { courseSlug, lessonId } = await props.params;
     const session = await getSessionUser(req);
 
-    if (!session) {
-      return NextResponse.json({ success: false, error: "Authentication required" }, { status: 401 });
-    }
-
     await connectDB();
 
     const course = await Course.findOne({ slug: courseSlug }).lean();
@@ -30,21 +26,29 @@ export async function GET(
     let prevLessonId: string | null = null;
     let nextLessonId: string | null = null;
 
-    const allLessons: Array<{ id: string; title: string }> = [];
+    const allLessons: Array<{ id: string; slug: string; title: string }> = [];
     for (const mod of course.modules) {
       for (const les of mod.lessons) {
-        allLessons.push({ id: (les as any)._id.toString(), title: les.title });
+        allLessons.push({
+          id: (les as any)._id.toString(),
+          slug: les.slug,
+          title: les.title,
+        });
       }
     }
 
-    const currentIndex = allLessons.findIndex((l) => l.id === lessonId);
+    const currentIndex = allLessons.findIndex(
+      (l) => l.id === lessonId || l.slug === lessonId
+    );
     if (currentIndex !== -1) {
       if (currentIndex > 0) prevLessonId = allLessons[currentIndex - 1].id;
       if (currentIndex < allLessons.length - 1) nextLessonId = allLessons[currentIndex + 1].id;
     }
 
     for (const mod of course.modules) {
-      const found = mod.lessons.find((l: any) => l._id.toString() === lessonId);
+      const found = mod.lessons.find(
+        (l: any) => l._id.toString() === lessonId || l.slug === lessonId
+      );
       if (found) {
         targetLesson = found;
         targetModule = mod;
@@ -53,50 +57,76 @@ export async function GET(
     }
 
     if (!targetLesson) {
+      for (const mod of course.modules) {
+        if (mod._id.toString() === lessonId || `module-${mod._id.toString()}` === lessonId) {
+          targetModule = mod;
+          targetLesson = mod.lessons[0] || {
+            _id: mod._id,
+            title: mod.title,
+            slug: `module-${mod._id}`,
+            type: "article",
+            content: mod.notes || mod.description,
+            isPreview: false,
+          };
+          break;
+        }
+      }
+    }
+
+    if (!targetLesson) {
       return NextResponse.json({ success: false, error: "Lesson not found" }, { status: 404 });
     }
 
     // Verify enrollment or instructor/admin authorization
-    const isOwnerOrAdmin =
-      session.role === "admin" ||
-      (session.role === "instructor" && course.instructor.toString() === session.userId);
+    let enrollment: any = null;
+    let progress: any = null;
 
-    const enrollment = await Enrollment.findOne({
-      userId: session.userId,
-      courseId: course._id,
-      status: { $in: ["active", "completed"] },
-    });
+    if (!session) {
+      if (!targetLesson.isPreview) {
+        return NextResponse.json({ success: false, error: "Authentication required to access this lesson" }, { status: 401 });
+      }
+    } else {
+      const isOwnerOrAdmin =
+        session.role === "admin" ||
+        (session.role === "instructor" && course.instructor.toString() === session.userId);
 
-    if (!enrollment && !isOwnerOrAdmin && !targetLesson.isPreview) {
-      return NextResponse.json(
-        { success: false, error: "You must be enrolled in this course to access this lesson" },
-        { status: 403 }
-      );
-    }
+      enrollment = await Enrollment.findOne({
+        userId: session.userId,
+        courseId: course._id,
+        status: { $in: ["active", "completed"] },
+      });
 
-    // Update last accessed lesson on enrollment
-    if (enrollment) {
-      enrollment.lastAccessedLessonId = lessonId;
-      await enrollment.save();
-    }
+      if (!enrollment && !isOwnerOrAdmin && !targetLesson.isPreview) {
+        return NextResponse.json(
+          { success: false, error: "You must be enrolled in this course to access this lesson" },
+          { status: 403 }
+        );
+      }
 
-    // Get student's personal progress for this lesson
-    let progress = await LessonProgress.findOne({
-      userId: session.userId,
-      courseId: course._id,
-      lessonId,
-    }).lean();
+      // Update last accessed lesson on enrollment
+      if (enrollment) {
+        enrollment.lastAccessedLessonId = lessonId;
+        await enrollment.save();
+      }
 
-    if (!progress) {
-      progress = {
-        userId: session.userId as any,
-        courseId: course._id as any,
+      // Get student's personal progress for this lesson
+      progress = await LessonProgress.findOne({
+        userId: session.userId,
+        courseId: course._id,
         lessonId,
-        isCompleted: enrollment?.completedLessons?.includes(lessonId) || false,
-        lastPositionSeconds: 0,
-        notes: "",
-        isBookmarked: false,
-      } as any;
+      }).lean();
+
+      if (!progress) {
+        progress = {
+          userId: session.userId as any,
+          courseId: course._id as any,
+          lessonId,
+          isCompleted: enrollment?.completedLessons?.includes(lessonId) || false,
+          lastPositionSeconds: 0,
+          notes: "",
+          isBookmarked: false,
+        } as any;
+      }
     }
 
     // If lesson is a quiz, load quiz definition and sanitize answers
@@ -144,6 +174,15 @@ export async function GET(
           _id: m._id,
           title: m.title,
           description: m.description,
+          order: m.order,
+          videoUrl: m.videoUrl,
+          videoDuration: m.videoDuration,
+          pdfUrl: m.pdfUrl,
+          pdfTitle: m.pdfTitle,
+          notes: m.notes,
+          hasVideo: Boolean(m.videoUrl),
+          hasPdf: Boolean(m.pdfUrl),
+          hasNotes: Boolean(m.notes),
           lessons: m.lessons.map((l: any) => ({
             _id: l._id,
             title: l.title,
@@ -151,6 +190,8 @@ export async function GET(
             type: l.type,
             durationMinutes: l.durationMinutes,
             isPreview: l.isPreview,
+            pdfUrl: l.pdfUrl,
+            pdfTitle: l.pdfTitle,
             isCompleted: enrollment?.completedLessons?.includes(l._id.toString()) || false,
           })),
         })),
@@ -158,6 +199,16 @@ export async function GET(
       currentModule: {
         _id: targetModule._id,
         title: targetModule.title,
+        description: targetModule.description,
+        order: targetModule.order,
+        videoUrl: targetModule.videoUrl,
+        videoDuration: targetModule.videoDuration,
+        pdfUrl: targetModule.pdfUrl,
+        pdfTitle: targetModule.pdfTitle,
+        notes: targetModule.notes,
+        hasVideo: Boolean(targetModule.videoUrl),
+        hasPdf: Boolean(targetModule.pdfUrl),
+        hasNotes: Boolean(targetModule.notes),
       },
       lesson: targetLesson,
       quiz: quizData,

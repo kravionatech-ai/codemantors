@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const session = await getSessionUser(req);
-    if (!session || session.role !== "admin") {
+    if (!session || (session.role !== "admin" && session.role !== "super_admin")) {
       return NextResponse.json({ success: false, error: "Admin access required" }, { status: 403 });
     }
 

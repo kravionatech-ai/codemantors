@@ -9,11 +9,14 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export const AUTH_COOKIE_NAME = "cm_token";
 
+export type UserRole = "student" | "instructor" | "admin" | "super_admin" | "support";
+
 export interface AuthUserPayload {
   userId: string;
   email: string;
   name: string;
-  role: "student" | "instructor" | "admin";
+  role: UserRole;
+  permissions?: string[];
 }
 
 export async function hashPassword(password: string): Promise<string> {
@@ -40,7 +43,8 @@ export async function verifyAuthToken(token: string): Promise<AuthUserPayload | 
       userId: payload.userId as string,
       email: payload.email as string,
       name: payload.name as string,
-      role: payload.role as "student" | "instructor" | "admin",
+      role: payload.role as UserRole,
+      permissions: (payload.permissions as string[]) || [],
     };
   } catch {
     return null;

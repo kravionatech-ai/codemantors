@@ -9,6 +9,15 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  async redirects() {
+    return [
+      {
+        source: "/cart",
+        destination: "/course-basket",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

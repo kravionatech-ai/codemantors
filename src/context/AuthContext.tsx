@@ -7,7 +7,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
-  role: "student" | "instructor" | "admin";
+  role: "student" | "instructor" | "admin" | "super_admin" | "support";
   avatar?: string;
   headline?: string;
   bio?: string;

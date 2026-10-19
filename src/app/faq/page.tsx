@@ -40,48 +40,48 @@ export default function FAQPage() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-12">
-      <div className="text-center space-y-3">
-        <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14 space-y-10 bg-[#F8FAFC] text-[#0F172A]">
+      <div className="text-center space-y-2">
+        <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
           Got Questions?
         </span>
-        <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#172554] tracking-tight">
           Frequently Asked Questions
         </h1>
-        <p className="text-xs sm:text-sm text-slate-400 max-w-lg mx-auto">
+        <p className="text-sm text-[#64748B] max-w-lg mx-auto">
           Find clear answers to questions about our platform, video delivery, certificates, and learning methodology.
         </p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-3">
         {faqs.map((faq, i) => (
           <details
             key={i}
-            className="group p-6 rounded-2xl border border-slate-800 bg-slate-900/40 [&_summary::-webkit-details-marker]:hidden"
+            className="group p-5 rounded-xl border border-[#E2E8F0] bg-white shadow-xs [&_summary::-webkit-details-marker]:hidden"
           >
-            <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-slate-200 group-hover:text-blue-400 transition-colors">
+            <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
               <span>{faq.q}</span>
-              <span className="ml-4 shrink-0 transition duration-300 group-open:-rotate-180 text-slate-500">
+              <span className="ml-4 shrink-0 transition duration-300 group-open:-rotate-180 text-[#64748B]">
                 ▼
               </span>
             </summary>
-            <p className="mt-3 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-slate-800/80 pt-3">
+            <p className="mt-3 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] pt-3">
               {faq.a}
             </p>
           </details>
         ))}
       </div>
 
-      <div className="text-center pt-8 border-t border-slate-800 text-xs text-slate-400">
-        Still have questions? Check out our{" "}
-        <Link href="/help" className="text-blue-400 font-semibold hover:underline">
-          Help Center
-        </Link>{" "}
-        or{" "}
-        <Link href="/contact" className="text-blue-400 font-semibold hover:underline">
-          contact our support team
+      <div className="p-6 rounded-xl bg-white border border-[#E2E8F0] text-center space-y-3 shadow-xs">
+        <h3 className="text-base font-bold text-[#0F172A]">Still have questions?</h3>
+        <p className="text-xs text-[#64748B]">Our support team is ready to assist you with any enrollment or account questions.</p>
+        <Link
+          href="/contact"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#172554] text-white text-xs font-semibold hover:bg-[#1E3A8A]"
+        >
+          <span>Contact Support</span>
+          <ArrowRight className="w-3.5 h-3.5" />
         </Link>
-        .
       </div>
     </div>
   );

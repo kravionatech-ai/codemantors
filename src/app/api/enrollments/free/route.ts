@@ -23,9 +23,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Course not found" }, { status: 404 });
     }
 
-    if (!course.isFree && course.price > 0) {
+    if (!course.isFree || (course.price !== undefined && course.price > 0)) {
       return NextResponse.json(
-        { success: false, error: "This course requires payment. Please use checkout." },
+        { success: false, error: "This course requires payment. Please complete checkout to enroll." },
         { status: 400 }
       );
     }

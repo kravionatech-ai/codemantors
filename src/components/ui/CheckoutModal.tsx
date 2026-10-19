@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Modal from "./Modal";
 import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthContext";
-import { ShieldCheck, Tag, Lock, CreditCard, Sparkles, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Tag, Lock, CreditCard, CheckCircle2, Loader2 } from "lucide-react";
 import confetti from "canvas-confetti";
 
 interface CheckoutModalProps {
@@ -95,7 +95,7 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
         toast.success("100% discount applied! You are now enrolled.");
         onClose();
         if (onSuccess) onSuccess();
-        router.push(`/dashboard`);
+        router.push(`/student/dashboard`);
         return;
       }
 
@@ -121,7 +121,7 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
         toast.success("Payment verified successfully! Welcome to the course.");
         onClose();
         if (onSuccess) onSuccess();
-        router.push(`/dashboard`);
+        router.push(`/student/dashboard`);
       } else {
         toast.error(verifyData.error || "Payment verification failed");
       }
@@ -134,18 +134,18 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Secure Course Checkout">
-      <div className="space-y-5">
+      <div className="space-y-5 text-[#0F172A]">
         {/* Course Summary Header */}
-        <div className="flex gap-4 p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+        <div className="flex gap-4 p-3.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
           <img
             src={course.thumbnail}
             alt={course.title}
-            className="w-20 h-14 rounded-lg object-cover bg-slate-800"
+            className="w-20 h-14 rounded-lg object-cover bg-slate-100"
           />
           <div className="flex-1 min-w-0">
-            <h4 className="text-xs font-semibold text-white line-clamp-2">{course.title}</h4>
-            <div className="mt-1 flex items-center gap-2 text-[11px] text-slate-400">
-              <span className="text-emerald-400 font-medium">Full Lifetime Access</span>
+            <h4 className="text-xs font-bold text-[#0F172A] line-clamp-2">{course.title}</h4>
+            <div className="mt-1 flex items-center gap-2 text-[11px] text-[#64748B]">
+              <span className="text-[#16A34A] font-semibold">Full Lifetime Access</span>
               <span>•</span>
               <span>Verified Certificate</span>
             </div>
@@ -154,8 +154,8 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
 
         {/* Coupon Code Input */}
         <form onSubmit={handleApplyCoupon} className="space-y-1.5">
-          <label className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
-            <Tag className="w-3.5 h-3.5 text-blue-400" />
+          <label className="text-xs font-semibold text-[#0F172A] flex items-center gap-1.5">
+            <Tag className="w-3.5 h-3.5 text-[#2563EB]" />
             Have a discount coupon? (Try: WELCOME20 or CODEMENTOR500)
           </label>
           <div className="flex gap-2">
@@ -164,18 +164,18 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
               value={couponCode}
               onChange={(e) => setCouponCode(e.target.value)}
               placeholder="e.g. WELCOME20"
-              className="flex-1 px-3 py-2 text-xs uppercase font-mono rounded-lg bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500"
+              className="flex-1 px-3 py-2 text-xs uppercase font-mono rounded-lg bg-white border border-[#E2E8F0] text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
             />
             <button
               type="submit"
               disabled={couponLoading || !couponCode.trim()}
-              className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 disabled:opacity-50 transition-colors"
+              className="px-3.5 py-2 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-[#0F172A] border border-[#E2E8F0] disabled:opacity-50 transition-colors cursor-pointer"
             >
               {couponLoading ? "Checking..." : "Apply"}
             </button>
           </div>
           {appliedCoupon && (
-            <div className="flex items-center gap-1 text-[11px] text-emerald-400 font-medium pt-1">
+            <div className="flex items-center gap-1 text-[11px] text-[#16A34A] font-semibold pt-1">
               <CheckCircle2 className="w-3.5 h-3.5" />
               <span>Coupon {appliedCoupon.code} active: Saved ₹{discountAmount}</span>
             </div>
@@ -183,31 +183,31 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
         </form>
 
         {/* Pricing Breakdown */}
-        <div className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 space-y-2 text-xs">
-          <div className="flex justify-between text-slate-400">
+        <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] space-y-2 text-xs">
+          <div className="flex justify-between text-[#64748B]">
             <span>Course Price</span>
             <span>₹{originalPrice.toLocaleString("en-IN")}</span>
           </div>
           {discountAmount > 0 && (
-            <div className="flex justify-between text-emerald-400">
+            <div className="flex justify-between text-[#16A34A] font-semibold">
               <span>Coupon Discount</span>
               <span>-₹{discountAmount.toLocaleString("en-IN")}</span>
             </div>
           )}
-          <div className="pt-2 border-t border-slate-800 flex justify-between text-sm font-bold text-white">
+          <div className="pt-2 border-t border-[#E2E8F0] flex justify-between text-sm font-bold text-[#0F172A]">
             <span>Total Payable</span>
-            <span className="text-blue-400">₹{finalPrice.toLocaleString("en-IN")}</span>
+            <span className="text-[#172554] font-extrabold text-base">₹{finalPrice.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
         {/* Razorpay Assurance */}
-        <div className="flex items-center justify-between text-[11px] text-slate-400 px-1">
+        <div className="flex items-center justify-between text-[11px] text-[#64748B] px-1">
           <span className="flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-emerald-400" />
+            <Lock className="w-3.5 h-3.5 text-[#16A34A]" />
             256-bit Encrypted Checkout
           </span>
           <span className="flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
+            <ShieldCheck className="w-3.5 h-3.5 text-[#2563EB]" />
             Razorpay Verified Gateway
           </span>
         </div>
@@ -216,17 +216,17 @@ export default function CheckoutModal({ isOpen, onClose, course, onSuccess }: Ch
         <button
           onClick={handleCheckout}
           disabled={loading}
-          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+          className="w-full py-2.5 px-4 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold text-sm shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-60 cursor-pointer"
         >
           {loading ? (
             <span className="flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-              Processing Order & Verification...
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span>Processing Order...</span>
             </span>
           ) : (
             <>
               <CreditCard className="w-4 h-4" />
-              Pay ₹{finalPrice.toLocaleString("en-IN")} & Start Learning
+              <span>Pay ₹{finalPrice.toLocaleString("en-IN")} & Start Learning</span>
             </>
           )}
         </button>

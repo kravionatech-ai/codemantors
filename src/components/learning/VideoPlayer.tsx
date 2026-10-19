@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useMemo } from "react";
 import {
   Play,
   Pause,
@@ -12,6 +12,7 @@ import {
   Minimize,
   CheckCircle,
   AlertTriangle,
+  Subtitles,
 } from "lucide-react";
 
 interface VideoPlayerProps {
@@ -41,6 +42,7 @@ export default function VideoPlayer({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  const [captionsEnabled, setCaptionsEnabled] = useState(false);
 
   // Resume from last position on load
   useEffect(() => {
@@ -150,6 +152,49 @@ export default function VideoPlayer({
     return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
+  const embedInfo = useMemo(() => {
+    if (!videoUrl) return null;
+    const ytMatch = videoUrl.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/
+    );
+    if (ytMatch) {
+      return {
+        type: "youtube",
+        src: `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=0&rel=0`,
+      };
+    }
+    const vimeoMatch = videoUrl.match(
+      /vimeo\.com\/(?:channels\/(?:\w+\/)?|groups\/([^\/]*)\/videos\/|album\/(\d+)\/video\/|video\/|)(\d+)/
+    );
+    if (vimeoMatch) {
+      return {
+        type: "vimeo",
+        src: `https://player.vimeo.com/video/${vimeoMatch[3]}`,
+      };
+    }
+    return null;
+  }, [videoUrl]);
+
+  if (embedInfo) {
+    return (
+      <div className="relative aspect-video w-full rounded-2xl bg-slate-950 border border-slate-800 overflow-hidden shadow-2xl">
+        <iframe
+          src={embedInfo.src}
+          title="Video lecture player"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="w-full h-full border-0"
+        />
+        {isCompleted && (
+          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-slate-950/80 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5 backdrop-blur-md z-20">
+            <CheckCircle className="w-3.5 h-3.5" />
+            Completed
+          </div>
+        )}
+      </div>
+    );
+  }
+
   if (hasError) {
     return (
       <div className="relative aspect-video w-full rounded-2xl bg-slate-900 border border-slate-800 flex flex-col items-center justify-center p-6 text-center">
@@ -195,6 +240,15 @@ export default function VideoPlayer({
         <div className="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-slate-950/80 text-emerald-400 border border-emerald-500/30 text-xs font-semibold flex items-center gap-1.5 backdrop-blur-md z-20">
           <CheckCircle className="w-3.5 h-3.5" />
           Completed
+        </div>
+      )}
+
+      {/* Subtitles Overlay */}
+      {captionsEnabled && isPlaying && (
+        <div className="absolute bottom-16 inset-x-0 flex justify-center px-4 pointer-events-none z-20">
+          <p className="bg-slate-950/90 text-white text-xs sm:text-sm font-medium px-4 py-1.5 rounded-lg shadow-xl max-w-xl text-center backdrop-blur-xs border border-white/10">
+            [Audio Track: English CC — Technical narration & live coding demo]
+          </p>
         </div>
       )}
 
@@ -275,6 +329,20 @@ export default function VideoPlayer({
 
           {/* Right Controls */}
           <div className="flex items-center gap-2">
+            {/* Captions Toggle */}
+            <button
+              onClick={() => setCaptionsEnabled(!captionsEnabled)}
+              className={`p-1.5 rounded-lg transition-colors cursor-pointer ${
+                captionsEnabled
+                  ? "bg-blue-600 text-white shadow-xs"
+                  : "text-slate-400 hover:text-white hover:bg-slate-800"
+              }`}
+              title={captionsEnabled ? "Captions: ON (English)" : "Captions: OFF"}
+              aria-label="Toggle subtitles"
+            >
+              <Subtitles className="w-4 h-4" />
+            </button>
+
             {/* Speed Selector */}
             <div className="flex items-center gap-1 bg-slate-900/80 px-2 py-1 rounded-lg border border-slate-800">
               {[0.75, 1, 1.25, 1.5, 2].map((speed) => (

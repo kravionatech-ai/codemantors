@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const session = await getSessionUser(req);
-    if (!session || session.role !== "admin") {
+    if (!session || (session.role !== "admin" && session.role !== "super_admin")) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
     }
 
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     const session = await getSessionUser(req);
-    if (!session || session.role !== "admin") {
+    if (!session || (session.role !== "admin" && session.role !== "super_admin")) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 403 });
     }
 
@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
           html: `<p>Your refund of <strong>INR ${refund.amount}</strong> for <strong>${course?.title}</strong> has been approved.</p>`,
           userId: student._id.toString(),
           type: "refund",
-          link: "/dashboard",
+          link: "/student/dashboard",
         }).catch(console.error);
       }
     } else {
@@ -103,7 +103,7 @@ export async function PUT(req: NextRequest) {
           html: `<p>Your refund request for <strong>${course?.title}</strong> was not approved.</p><p>Reason: ${adminNotes || "Standard policy terms."}</p>`,
           userId: student._id.toString(),
           type: "refund",
-          link: "/dashboard",
+          link: "/student/dashboard",
         }).catch(console.error);
       }
     }

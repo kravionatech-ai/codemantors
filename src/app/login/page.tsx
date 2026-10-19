@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState, Suspense } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
-import { Code2, Lock, Mail, ArrowRight, ShieldCheck, UserCheck } from "lucide-react";
+import AuthLayout from "@/components/auth/AuthLayout";
+import { Lock, Mail, ArrowRight, Eye, EyeOff, Loader2 } from "lucide-react";
 
 function LoginContent() {
-  const { login } = useAuth();
+  const { user, login } = useAuth();
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -16,7 +17,25 @@ function LoginContent() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//") ? redirectUrl : "";
+
+  // If already logged in, redirect automatically to the appropriate role dashboard
+  useEffect(() => {
+    if (user) {
+      if (safeRedirectUrl) {
+        router.push(safeRedirectUrl);
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.push("/admin/dashboard");
+      } else if (user.role === "instructor") {
+        router.push("/instructor/dashboard");
+      } else {
+        router.push("/student/dashboard");
+      }
+    }
+  }, [user, safeRedirectUrl, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,14 +53,14 @@ function LoginContent() {
         login(data.user);
         toast.success(`Welcome back, ${data.user.name}!`);
 
-        if (redirectUrl) {
-          router.push(redirectUrl);
-        } else if (data.user.role === "admin") {
-          router.push("/admin");
+        if (safeRedirectUrl) {
+          router.push(safeRedirectUrl);
+        } else if (data.user.role === "admin" || data.user.role === "super_admin") {
+          router.push("/admin/dashboard");
         } else if (data.user.role === "instructor") {
-          router.push("/instructor");
+          router.push("/instructor/dashboard");
         } else {
-          router.push("/dashboard");
+          router.push("/student/dashboard");
         }
       } else {
         toast.error(data.error || "Login failed. Check your email and password.");
@@ -53,129 +72,96 @@ function LoginContent() {
     }
   };
 
-  // Quick Demo Account Auto-Fill
-  const fillDemoAccount = (roleEmail: string) => {
-    setEmail(roleEmail);
-    setPassword("Password@12345");
-  };
-
   return (
-    <div className="min-h-[80vh] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-2">
-        <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center mx-auto shadow-lg shadow-blue-500/25">
-          <Code2 className="w-6 h-6 text-white" />
-        </div>
-        <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-          Sign In to CodeMentors
-        </h2>
-        <p className="text-xs text-slate-400">
-          Access your courses, bookmarks, and verifiable certificates.
-        </p>
-      </div>
+    <AuthLayout
+      title="Sign in to your account"
+      subtitle="Access your enrolled courses, lesson progress, and certificates."
+    >
+      <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
+              Email Address
+            </label>
+            <div className="relative">
+              <Mail className="w-4 h-4 text-[#94A3B8] absolute left-3 top-3 pointer-events-none" />
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@domain.com"
+                className="w-full pl-9 pr-3.5 py-2 text-sm rounded-lg bg-white border border-[#E2E8F0] text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+              />
+            </div>
+          </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="rounded-3xl border border-slate-800 bg-slate-900/60 p-6 sm:p-8 shadow-2xl space-y-6">
-          {/* Quick Demo Logins Pill Box */}
-          <div className="p-3.5 rounded-2xl bg-blue-950/20 border border-blue-500/20 space-y-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1">
-              <UserCheck className="w-3.5 h-3.5" />
-              1-Click Demo Accounts (Pass: Password@12345)
-            </span>
-            <div className="grid grid-cols-3 gap-1.5 text-[10px] font-semibold">
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-xs font-semibold text-[#0F172A]">
+                Password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-xs text-[#2563EB] hover:text-[#1D4ED8] hover:underline"
+              >
+                Forgot password?
+              </Link>
+            </div>
+            <div className="relative">
+              <Lock className="w-4 h-4 text-[#94A3B8] absolute left-3 top-3 pointer-events-none" />
+              <input
+                type={showPassword ? "text" : "password"}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full pl-9 pr-10 py-2 text-sm rounded-lg bg-white border border-[#E2E8F0] text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#2563EB] focus:ring-1 focus:ring-[#2563EB]"
+              />
               <button
                 type="button"
-                onClick={() => fillDemoAccount("student@codemetors.com")}
-                className="py-1 px-1.5 rounded bg-slate-900 hover:bg-slate-800 text-blue-300 border border-slate-800 transition-colors"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-2.5 text-[#94A3B8] hover:text-[#0F172A]"
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                Student
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemoAccount("alex@codemetors.com")}
-                className="py-1 px-1.5 rounded bg-slate-900 hover:bg-slate-800 text-violet-300 border border-slate-800 transition-colors"
-              >
-                Instructor
-              </button>
-              <button
-                type="button"
-                onClick={() => fillDemoAccount("admin@codemetors.com")}
-                className="py-1 px-1.5 rounded bg-slate-900 hover:bg-slate-800 text-rose-300 border border-slate-800 transition-colors"
-              >
-                Admin
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-            <div>
-              <label className="font-semibold text-slate-300 block mb-1">Email Address</label>
-              <div className="relative">
-                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@domain.com"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-2.5 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold text-sm shadow-xs flex items-center justify-center gap-2 transition-colors disabled:opacity-60 cursor-pointer"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Signing in...</span>
+              </>
+            ) : (
+              <>
+                <span>Sign In</span>
+                <ArrowRight className="w-4 h-4" />
+              </>
+            )}
+          </button>
+        </form>
 
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <label className="font-semibold text-slate-300">Password</label>
-                <Link
-                  href="/forgot-password"
-                  className="text-[11px] text-blue-400 hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <div className="relative">
-                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
-                <input
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-600 focus:outline-none focus:border-blue-500"
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
-            >
-              {loading ? (
-                "Signing In..."
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <div className="pt-4 border-t border-slate-800 text-center text-xs text-slate-400">
-            Don't have an account yet?{" "}
-            <Link href="/register" className="text-blue-400 font-semibold hover:underline">
-              Create an account
-            </Link>
-          </div>
+        <div className="pt-4 border-t border-[#E2E8F0] text-center text-xs text-[#64748B]">
+          Don't have an account yet?{" "}
+          <Link href="/register" className="text-[#2563EB] font-semibold hover:underline">
+            Create an account
+          </Link>
         </div>
       </div>
-    </div>
+    </AuthLayout>
   );
 }
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-slate-400">Loading sign in...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-[#64748B]">Loading sign in...</div>}>
       <LoginContent />
     </Suspense>
   );

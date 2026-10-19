@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ToastProvider } from "@/context/ToastContext";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { CartProvider } from "@/context/CartContext";
+import PublicNavShell from "@/components/PublicNavShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,35 +60,60 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLdOrg = {
+  const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    name: "CodeMentors",
-    url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
-    logo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/logo.png`,
-    description:
-      "Professional online learning platform supporting video and text-based courses, quizzes, and certificates.",
-    sameAs: [
-      "https://github.com",
-      "https://twitter.com",
-      "https://linkedin.com",
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": "https://codementors.com/#organization",
+        name: "CodeMentors",
+        url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3005",
+        logo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3005"}/logo.png`,
+        description:
+          "Professional online learning management system supporting video and text-based courses, quizzes, and certificates.",
+        sameAs: [
+          "https://github.com",
+          "https://twitter.com",
+          "https://linkedin.com",
+        ],
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://codementors.com/#website",
+        url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3005",
+        name: "CodeMentors",
+        publisher: {
+          "@id": "https://codementors.com/#organization",
+        },
+      },
+      {
+        "@type": "WebApplication",
+        name: "CodeMentors LMS Platform",
+        applicationCategory: "EducationalApplication",
+        operatingSystem: "All",
+        provider: {
+          "@type": "Organization",
+          name: "Kraviona Tech Solutions",
+          url: "https://kraviona.com/",
+        },
+      },
     ],
   };
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrg) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
         />
       </head>
-      <body className="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-blue-600 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-[#0F172A] selection:bg-[#2563EB] selection:text-white">
         <AuthProvider>
           <ToastProvider>
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
+            <CartProvider>
+              <PublicNavShell>{children}</PublicNavShell>
+            </CartProvider>
           </ToastProvider>
         </AuthProvider>
       </body>

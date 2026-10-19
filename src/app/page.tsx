@@ -11,16 +11,25 @@ import {
   CheckCircle2,
   Search,
   ArrowRight,
-  ShieldCheck,
-  Zap,
+  Sparkles,
+  Terminal,
+  Star,
   Users,
   Compass,
-  Sparkles,
-  BookOpen,
-  Laptop,
-  Terminal,
-  HelpCircle,
 } from "lucide-react";
+import { Metadata } from "next";
+import { resolvePageSeo } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return await resolvePageSeo("/", {
+    title: "CodeMentors — Learn to Code. Build Real Skills. Grow Your Career.",
+    description:
+      "Enterprise online learning platform for software developers. Master modern stacks with structured video lessons, interactive coding exercises, and accredited certificates.",
+    canonicalPath: "/",
+  });
+}
 
 export default async function HomePage() {
   let featuredCourses: any[] = [];
@@ -31,7 +40,7 @@ export default async function HomePage() {
 
   try {
     await connectDB();
-    [featuredCourses, categories, learningPaths, reviews, instructors] = await Promise.all([
+    const [rawCourses, rawCategories, rawPaths, rawReviews, rawInstructors] = await Promise.all([
       Course.find({ status: "published", isFeatured: true })
         .populate("instructor", "name avatar headline")
         .limit(6)
@@ -41,6 +50,12 @@ export default async function HomePage() {
       Review.find({ status: "approved" }).populate("userId", "name avatar headline").populate("courseId", "title").limit(3).lean(),
       User.find({ role: "instructor", isActive: true }).select("name avatar headline bio socialLinks").limit(3).lean(),
     ]);
+
+    featuredCourses = JSON.parse(JSON.stringify(rawCourses || []));
+    categories = JSON.parse(JSON.stringify(rawCategories || []));
+    learningPaths = JSON.parse(JSON.stringify(rawPaths || []));
+    reviews = JSON.parse(JSON.stringify(rawReviews || []));
+    instructors = JSON.parse(JSON.stringify(rawInstructors || []));
   } catch (err) {
     console.warn("Database query during home render (DB may be seeding):", err);
   }
@@ -60,7 +75,7 @@ export default async function HomePage() {
   const faqs = [
     {
       q: "How does CodeMentors combine video and text-based learning?",
-      a: "Every course is structured with mixed learning modalities. You get visual walkthroughs and system architecture explanations in high-definition video lessons, coupled with deep-dive written technical articles containing copyable code snippets, callouts, and architectural diagrams.",
+      a: "Every course is structured with dual learning modalities. You get visual walkthroughs and system architecture explanations in high-definition video lessons, coupled with deep-dive written technical articles containing copyable code snippets, callouts, and architectural diagrams.",
     },
     {
       q: "Are the certificates verified and shareable?",
@@ -81,69 +96,67 @@ export default async function HomePage() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-[#F8FAFC] text-[#0F172A]">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
       />
 
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-slate-800/80 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950">
+      <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-24 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto space-y-6">
             {/* Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-400">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Next-Generation Developer LMS</span>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-[#2563EB]">
+              <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" />
+              <span>Next-Generation Developer Learning Management System</span>
             </div>
 
             {/* Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-[#172554] leading-tight">
               Learn to Code. Build Real Skills.{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-violet-400">
-                Grow Your Career.
-              </span>
+              <span className="text-[#2563EB]">Grow Your Career.</span>
             </h1>
 
             {/* Description */}
-            <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
-              Master software engineering with industry-leading video lessons, in-depth technical documentation, interactive quizzes, and hands-on coding sandboxes.
+            <p className="text-base sm:text-lg text-[#64748B] leading-relaxed max-w-2xl mx-auto">
+              Master software engineering with industry-grade video lessons, structured text tutorials, interactive quizzes, and hands-on coding practice.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <Link
                 href="/courses"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-xl shadow-blue-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105"
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold text-sm shadow-xs flex items-center justify-center gap-2 transition-colors"
               >
-                Explore Courses
+                <span>Explore Courses</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/register"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-sm border border-slate-800 transition-all"
+                className="w-full sm:w-auto px-6 py-3 rounded-lg bg-white hover:bg-slate-50 text-[#0F172A] font-semibold text-sm border border-[#E2E8F0] shadow-xs transition-colors"
               >
                 Start Learning Free
               </Link>
             </div>
 
             {/* Interactive Search Bar */}
-            <div className="pt-6 max-w-xl mx-auto">
+            <div className="pt-4 max-w-xl mx-auto">
               <form
                 action="/courses"
                 method="GET"
-                className="relative flex items-center shadow-2xl rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/80 backdrop-blur-md focus-within:border-blue-500 transition-colors"
+                className="relative flex items-center rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#F8FAFC] focus-within:border-[#2563EB] focus-within:bg-white shadow-2xs transition-all"
               >
-                <Search className="w-5 h-5 text-slate-400 ml-4 shrink-0" />
+                <Search className="w-5 h-5 text-[#94A3B8] ml-4 shrink-0" />
                 <input
                   type="text"
                   name="search"
                   placeholder="Search by topic, e.g. Next.js, TypeScript, Python, Architecture..."
-                  className="w-full px-4 py-3.5 bg-transparent text-sm text-slate-100 placeholder-slate-500 focus:outline-none"
+                  className="w-full px-4 py-3 bg-transparent text-sm text-[#0F172A] placeholder-[#94A3B8] focus:outline-none"
                 />
                 <button
                   type="submit"
-                  className="mr-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition-colors shrink-0"
+                  className="mr-2 px-4 py-2 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold text-xs transition-colors shrink-0 cursor-pointer"
                 >
                   Search
                 </button>
@@ -151,22 +164,22 @@ export default async function HomePage() {
             </div>
 
             {/* Trust Badges */}
-            <div className="pt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-slate-400">
+            <div className="pt-6 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-[#64748B]">
               <div className="flex items-center gap-2">
-                <Video className="w-4 h-4 text-blue-400" />
+                <Video className="w-4 h-4 text-[#2563EB]" />
                 <span>HD Video Walkthroughs</span>
               </div>
               <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" />
+                <FileText className="w-4 h-4 text-[#172554]" />
                 <span>Deep Technical Articles</span>
               </div>
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-emerald-400" />
+                <Terminal className="w-4 h-4 text-[#16A34A]" />
                 <span>In-Browser Coding Practice</span>
               </div>
               <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-amber-400" />
-                <span>Accredited Certificates</span>
+                <Award className="w-4 h-4 text-[#06B6D4]" />
+                <span>Verifiable Certificates</span>
               </div>
             </div>
           </div>
@@ -174,20 +187,20 @@ export default async function HomePage() {
       </section>
 
       {/* 2. Popular Categories */}
-      <section className="py-16 border-b border-slate-800/80 bg-slate-950/60">
+      <section className="py-16 border-b border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
             <div>
-              <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+              <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
                 Browse by Specialization
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] mt-1">
                 Top Engineering Categories
               </h2>
             </div>
             <Link
               href="/courses"
-              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+              className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1"
             >
               View all categories <ArrowRight className="w-3.5 h-3.5" />
             </Link>
@@ -210,16 +223,16 @@ export default async function HomePage() {
               <Link
                 key={cat.slug}
                 href={`/courses?category=${encodeURIComponent(cat.name)}`}
-                className="group p-5 rounded-2xl border border-slate-800 bg-slate-900/40 hover:bg-slate-900 hover:border-slate-700 transition-all"
+                className="group p-5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] hover:shadow-xs transition-all"
               >
-                <div className="w-10 h-10 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20 flex items-center justify-center mb-3 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center mb-3 group-hover:bg-[#172554] group-hover:text-white transition-colors">
                   <Code2 className="w-5 h-5" />
                 </div>
-                <h3 className="font-semibold text-sm text-slate-100 group-hover:text-blue-400 transition-colors">
+                <h3 className="font-bold text-sm text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  {cat.courseCount ? `${cat.courseCount} Courses` : "Explore track"}
+                <p className="text-xs text-[#64748B] mt-1">
+                  {cat.courseCount ? `${cat.courseCount} Courses` : "Explore curriculum"}
                 </p>
               </Link>
             ))}
@@ -228,20 +241,20 @@ export default async function HomePage() {
       </section>
 
       {/* 3. Featured Courses */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950">
+      <section className="py-20 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
-              <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+              <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
                 Curated for Engineers
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mt-1">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F172A] mt-1">
                 Featured Production Courses
               </h2>
             </div>
             <Link
               href="/courses"
-              className="text-xs font-semibold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+              className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] flex items-center gap-1"
             >
               Explore all courses <ArrowRight className="w-3.5 h-3.5" />
             </Link>
@@ -253,11 +266,11 @@ export default async function HomePage() {
                 <CourseCard key={c._id.toString()} course={c} />
               ))
             ) : (
-              <div className="col-span-full py-12 text-center text-slate-400">
+              <div className="col-span-full py-12 text-center text-[#64748B]">
                 <p>Loading curated courses...</p>
                 <Link
                   href="/courses"
-                  className="mt-3 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-xs"
+                  className="mt-3 inline-block px-4 py-2 bg-[#172554] text-white rounded-lg text-xs"
                 >
                   View Course Catalog
                 </Link>
@@ -268,16 +281,16 @@ export default async function HomePage() {
       </section>
 
       {/* 4. Structured Learning Paths */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950/60">
+      <section className="py-20 border-b border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-xs uppercase font-bold tracking-wider text-indigo-400">
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
               Career Roadmaps
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
               Curated Learning Paths
             </h2>
-            <p className="text-sm text-slate-400 mt-2">
+            <p className="text-sm text-[#64748B] mt-2">
               Follow step-by-step sequences designed to take you from foundational understanding to production competence.
             </p>
           </div>
@@ -292,7 +305,6 @@ export default async function HomePage() {
                     description: "From JavaScript core execution mechanics to enterprise Next.js App Router and clean TypeScript architecture.",
                     level: "All Levels",
                     estimatedHours: 60,
-                    courses: [1, 2, 3],
                   },
                   {
                     title: "AI & Full-Stack Systems Engineer",
@@ -300,40 +312,39 @@ export default async function HomePage() {
                     description: "Combine modern full-stack web engineering with production Python LLM application development.",
                     level: "Intermediate",
                     estimatedHours: 50,
-                    courses: [1, 2],
                   },
                 ]
             ).map((path: any) => (
               <div
                 key={path.slug}
-                className="p-8 rounded-3xl border border-slate-800 bg-slate-900/50 flex flex-col justify-between hover:border-slate-700 transition-all"
+                className="p-8 rounded-xl border border-[#E2E8F0] bg-white shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between text-xs mb-4">
-                    <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 font-semibold">
+                    <span className="px-2.5 py-1 rounded bg-blue-50 border border-blue-200 text-[#2563EB] font-semibold">
                       {path.level}
                     </span>
-                    <span className="text-slate-400 font-medium">
+                    <span className="text-[#64748B] font-medium">
                       ~{path.estimatedHours || 50} Hours Total
                     </span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-white mb-2">{path.title}</h3>
-                  <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                  <h3 className="text-xl font-bold text-[#0F172A] mb-2">{path.title}</h3>
+                  <p className="text-sm text-[#64748B] leading-relaxed mb-6">
                     {path.description}
                   </p>
 
                   <div className="space-y-2.5 mb-6">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-300 block">
-                      Included Curriculum Steps:
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#0F172A] block">
+                      Curriculum Highlights:
                     </span>
                     {(path.learningObjectives || [
                       "Master JavaScript runtime mechanics & Event Loop",
                       "Build production Next.js 15 App Router applications",
                       "Implement Hexagonal Architecture & Type Narrowing in TypeScript",
                     ]).map((obj: string, i: number) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-slate-300">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                      <div key={i} className="flex items-start gap-2 text-xs text-[#64748B]">
+                        <CheckCircle2 className="w-4 h-4 text-[#16A34A] shrink-0 mt-0.5" />
                         <span>{obj}</span>
                       </div>
                     ))}
@@ -342,9 +353,9 @@ export default async function HomePage() {
 
                 <Link
                   href="/learning-paths"
-                  className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold text-center border border-slate-700 transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-lg bg-[#F8FAFC] hover:bg-slate-100 text-[#0F172A] text-xs font-semibold text-center border border-[#E2E8F0] transition-colors flex items-center justify-center gap-1.5"
                 >
-                  Explore Roadmap Details
+                  <span>Explore Roadmap Details</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -354,48 +365,48 @@ export default async function HomePage() {
       </section>
 
       {/* 5. Why Choose CodeMentors */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950">
+      <section className="py-20 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
               The CodeMentors Advantage
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
-              Engineered for Serious Software Developers
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
+              Engineered for Serious Developers
             </h2>
-            <p className="text-sm text-slate-400 mt-2">
-              Most platforms give you isolated toy snippets. We teach full production architectures, edge cases, and real systems.
+            <p className="text-sm text-[#64748B] mt-2">
+              Most platforms provide toy snippets. We teach full production architectures, edge cases, and real systems.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-blue-600/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
-                <Video className="w-6 h-6" />
+            <div className="p-6 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center">
+                <Video className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Mixed Video & Article Engine</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              <h3 className="text-base font-bold text-[#0F172A]">Dual Video & Article Engine</h3>
+              <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
                 Seamlessly toggle between video walkthroughs and searchable, syntax-highlighted written articles with copy-code tools.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-emerald-600/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center">
-                <Terminal className="w-6 h-6" />
+            <div className="p-6 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-emerald-50 text-[#16A34A] flex items-center justify-center">
+                <Terminal className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Quizzes & Coding Sandboxes</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Test your knowledge through timed conceptual quizzes and in-browser coding exercises that run against unit tests.
+              <h3 className="text-base font-bold text-[#0F172A]">Quizzes & Practice Labs</h3>
+              <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
+                Validate comprehension through conceptual quizzes and in-browser coding exercises that execute against test cases.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 space-y-3">
-              <div className="w-12 h-12 rounded-xl bg-amber-600/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
-                <Award className="w-6 h-6" />
+            <div className="p-6 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] space-y-3">
+              <div className="w-10 h-10 rounded-lg bg-cyan-50 text-[#06B6D4] flex items-center justify-center">
+                <Award className="w-5 h-5" />
               </div>
-              <h3 className="text-lg font-bold text-white">Accredited Verification</h3>
-              <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">
-                Earn cryptographic certificates of completion with public verification URLs you can link to your resume and LinkedIn profile.
+              <h3 className="text-base font-bold text-[#0F172A]">Verifiable Credentials</h3>
+              <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed">
+                Earn cryptographic certificates of completion with public verification URLs you can link to your resume and LinkedIn.
               </p>
             </div>
           </div>
@@ -403,13 +414,13 @@ export default async function HomePage() {
       </section>
 
       {/* 6. Learning Process (4 steps) */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950/60">
+      <section className="py-20 border-b border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs uppercase font-bold tracking-wider text-indigo-400">
-              Workflow
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
+              Structured Workflow
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
               How You Master Skills on CodeMentors
             </h2>
           </div>
@@ -439,16 +450,13 @@ export default async function HomePage() {
             ].map((s) => (
               <div
                 key={s.step}
-                className="p-6 rounded-2xl border border-slate-800 bg-slate-900/30 relative overflow-hidden"
+                className="p-6 rounded-xl border border-[#E2E8F0] bg-white shadow-xs relative overflow-hidden"
               >
-                <span className="text-3xl font-black text-slate-800 absolute top-4 right-4 select-none">
-                  {s.step}
-                </span>
-                <div className="w-8 h-8 rounded-lg bg-blue-600/10 text-blue-400 flex items-center justify-center font-bold text-xs mb-4">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center font-bold text-xs mb-4">
                   {s.step}
                 </div>
-                <h3 className="text-base font-bold text-white mb-2">{s.title}</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">{s.desc}</p>
+                <h3 className="text-base font-bold text-[#0F172A] mb-2">{s.title}</h3>
+                <p className="text-xs text-[#64748B] leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -456,128 +464,116 @@ export default async function HomePage() {
       </section>
 
       {/* 7. Student Testimonials (genuine data) */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950">
+      <section className="py-20 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
               Learner Feedback
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
               What Engineers Are Saying
             </h2>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-[#64748B] mt-1">
               Verified reviews submitted by enrolled students
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {(reviews.length > 0
-              ? reviews
-              : [
-                  {
-                    reviewText:
-                      "The explanation of React Server Components vs Client Components finally made everything click for me. The hands-on project and Server Actions lessons are top notch!",
-                    userId: { name: "Jane Student", headline: "Software Engineer" },
-                    courseId: { title: "Next.js 15 & React 19 Mastery" },
-                  },
-                  {
-                    reviewText:
-                      "Branded types and the clean repository pattern changed how our entire engineering team structures our Node.js services. Essential course for serious devs.",
-                    userId: { name: "Marcus Wright", headline: "Senior Backend Developer" },
-                    courseId: { title: "TypeScript Enterprise Patterns" },
-                  },
-                ]
-            ).map((r: any, idx: number) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl border border-slate-800 bg-slate-900/40 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center gap-1 text-amber-400 mb-3">
-                    {"★".repeat(5)}
-                  </div>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed italic">
-                    "{r.reviewText}"
-                  </p>
-                </div>
-
-                <div className="mt-6 pt-4 border-t border-slate-800/80 flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold text-xs">
-                    {r.userId?.name?.charAt(0) || "U"}
-                  </div>
+            {reviews.length > 0 ? (
+              reviews.map((r: any, idx: number) => (
+                <div
+                  key={idx}
+                  className="p-6 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex flex-col justify-between shadow-2xs"
+                >
                   <div>
-                    <h4 className="text-xs font-bold text-white">{r.userId?.name || "Student"}</h4>
-                    <p className="text-[11px] text-slate-400">{r.userId?.headline || "Enrolled Learner"}</p>
+                    <div className="flex items-center gap-1 text-[#D97706] mb-3 text-sm">
+                      {"★".repeat(5)}
+                    </div>
+                    <p className="text-xs sm:text-sm text-[#0F172A] leading-relaxed italic">
+                      "{r.reviewText}"
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-[#E2E8F0] flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#172554] text-[#06B6D4] flex items-center justify-center font-bold text-xs">
+                      {r.userId?.name?.charAt(0) || "U"}
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-[#0F172A]">{r.userId?.name || "Student"}</h4>
+                      <p className="text-[11px] text-[#64748B]">{r.userId?.headline || "Enrolled Learner"}</p>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 px-6 rounded-xl border border-dashed border-[#CBD5E1] text-center bg-white">
+                <p className="text-sm font-semibold text-[#64748B]">No student reviews published yet.</p>
+                <p className="text-xs text-[#94A3B8] mt-1">Verified reviews will appear here as enrolled students complete courses.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
 
       {/* 8. Instructors Section */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950/60">
+      <section className="py-20 border-b border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-xs uppercase font-bold tracking-wider text-indigo-400">
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
               Expert Mentorship
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
               Learn from Staff Engineers & Architects
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {(instructors.length > 0
-              ? instructors
-              : [
-                  {
-                    name: "Alex Rivers",
-                    headline: "Staff Software Architect & Ex-Tech Lead",
-                    bio: "12+ years building distributed cloud platforms, full-stack React systems, and mentoring 50,000+ engineers worldwide.",
-                  },
-                  {
-                    name: "Dr. Sarah Chen",
-                    headline: "Principal Systems Engineer & AI Researcher",
-                    bio: "PhD in Distributed Computing. Specializes in TypeScript internals, High-Performance Node.js, and LLM orchestration.",
-                  },
-                ]
-            ).map((ins: any) => (
-              <div
-                key={ins.name}
-                className="p-6 rounded-2xl border border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left"
-              >
-                {ins.avatar ? (
-                  <img
-                    src={ins.avatar}
-                    alt={ins.name}
-                    className="w-20 h-20 rounded-2xl object-cover shrink-0 bg-slate-800"
-                  />
-                ) : (
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold text-xl shrink-0">
-                    {ins.name.charAt(0)}
+            {instructors.length > 0 ? (
+              instructors.map((ins: any) => (
+                <div
+                  key={ins._id || ins.name}
+                  className="p-6 rounded-xl border border-[#E2E8F0] bg-white flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left shadow-xs"
+                >
+                  {ins.avatar ? (
+                    <img
+                      src={ins.avatar}
+                      alt={ins.name}
+                      className="w-18 h-18 rounded-xl object-cover shrink-0 bg-slate-100"
+                    />
+                  ) : (
+                    <div className="w-18 h-18 rounded-xl bg-[#172554] text-[#06B6D4] flex items-center justify-center font-bold text-xl shrink-0">
+                      {ins.name ? ins.name.charAt(0) : "I"}
+                    </div>
+                  )}
+                  <div>
+                    <h3 className="text-base font-bold text-[#0F172A]">{ins.name}</h3>
+                    {ins.headline && (
+                      <p className="text-xs text-[#2563EB] font-semibold mb-1.5">{ins.headline}</p>
+                    )}
+                    {ins.bio && (
+                      <p className="text-xs text-[#64748B] leading-relaxed line-clamp-3">{ins.bio}</p>
+                    )}
                   </div>
-                )}
-                <div>
-                  <h3 className="text-lg font-bold text-white">{ins.name}</h3>
-                  <p className="text-xs text-blue-400 font-semibold mb-2">{ins.headline}</p>
-                  <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">{ins.bio}</p>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 px-6 rounded-xl border border-dashed border-[#CBD5E1] text-center bg-white">
+                <p className="text-sm font-semibold text-[#64748B]">No instructors listed currently.</p>
+                <p className="text-xs text-[#94A3B8] mt-1">Accredited course instructors will be listed here once assigned.</p>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </section>
 
       {/* 9. Interactive FAQ Accordion */}
-      <section className="py-20 border-b border-slate-800/80 bg-slate-950">
+      <section className="py-20 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="text-xs uppercase font-bold tracking-wider text-blue-400">
+            <span className="text-xs uppercase font-bold tracking-wider text-[#2563EB]">
               Questions & Answers
             </span>
-            <h2 className="text-3xl font-extrabold text-white mt-1">
+            <h2 className="text-3xl font-extrabold text-[#0F172A] mt-1">
               Frequently Asked Questions
             </h2>
           </div>
@@ -586,15 +582,15 @@ export default async function HomePage() {
             {faqs.map((faq, i) => (
               <details
                 key={i}
-                className="group p-5 rounded-2xl border border-slate-800 bg-slate-900/40 [&_summary::-webkit-details-marker]:hidden"
+                className="group p-5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] [&_summary::-webkit-details-marker]:hidden"
               >
-                <summary className="flex items-center justify-between cursor-pointer font-semibold text-sm text-slate-200 group-hover:text-blue-400 transition-colors">
+                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
                   <span>{faq.q}</span>
-                  <span className="ml-4 shrink-0 transition duration-300 group-open:-rotate-180 text-slate-400">
+                  <span className="ml-4 shrink-0 transition duration-300 group-open:-rotate-180 text-[#64748B]">
                     ▼
                   </span>
                 </summary>
-                <p className="mt-3 text-xs sm:text-sm text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3">
+                <p className="mt-3 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] pt-3">
                   {faq.a}
                 </p>
               </details>
@@ -604,24 +600,24 @@ export default async function HomePage() {
       </section>
 
       {/* 10. Bottom Banner Call-To-Action */}
-      <section className="py-20 bg-gradient-to-b from-slate-950 via-blue-950/20 to-slate-950 text-center">
+      <section className="py-20 bg-[#172554] text-center text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white">
             Ready to Accelerate Your Software Engineering Career?
           </h2>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-[#94A3B8] max-w-xl mx-auto leading-relaxed">
             Join thousands of developers leveling up their full-stack, systems architecture, and AI engineering skills today.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
               href="/register"
-              className="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm shadow-xl shadow-blue-500/30 transition-all hover:scale-105"
+              className="px-6 py-3 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-sm shadow-xs transition-colors"
             >
               Get Started Now
             </Link>
             <Link
               href="/courses"
-              className="px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-sm border border-slate-800 transition-all"
+              className="px-6 py-3 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-sm border border-white/20 transition-colors"
             >
               Explore Course Catalog
             </Link>

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import { Enrollment, Course, Certificate, QuizAttempt, LessonProgress } from "@/models";
+import { Enrollment, Course, Certificate, QuizAttempt, LessonProgress, Payment, Notification } from "@/models";
 import { getSessionUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -46,6 +46,16 @@ export async function GET(req: NextRequest) {
       isBookmarked: true,
     })
       .populate("courseId", "title slug")
+      .limit(10)
+      .lean();
+
+    // 4b. Fetch user payments & receipts
+    const payments = await Payment.find({ userId: session.userId })
+      .populate("courseId", "title slug thumbnail price")
+      .sort({ createdAt: -1 })
+    // 4c. Fetch user notifications
+    const notifications = await Notification.find({ userId: session.userId })
+      .sort({ createdAt: -1 })
       .limit(10)
       .lean();
 
@@ -106,9 +116,11 @@ export async function GET(req: NextRequest) {
       },
       continueLearning,
       enrollments,
+      payments,
       certificates,
       quizAttempts,
       bookmarkedLessons,
+      notifications,
     });
   } catch (error: any) {
     console.error("Student dashboard API error:", error);

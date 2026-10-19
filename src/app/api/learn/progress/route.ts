@@ -28,10 +28,10 @@ export async function POST(req: NextRequest) {
       courseId,
     });
 
-    if (!enrollment) {
+    if (!enrollment || (enrollment.status !== "active" && enrollment.status !== "completed")) {
       return NextResponse.json(
-        { success: false, error: "Enrollment not found for this course" },
-        { status: 404 }
+        { success: false, error: "Active enrollment required to update lesson progress" },
+        { status: 403 }
       );
     }
 

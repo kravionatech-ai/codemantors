@@ -9,6 +9,7 @@ export interface ISupportResponse {
 
 export interface ISupportTicket extends Document {
   userId?: Types.ObjectId;
+  courseId?: Types.ObjectId;
   name: string;
   email: string;
   subject: string;
@@ -34,6 +35,7 @@ const SupportResponseSchema = new Schema<ISupportResponse>(
 const SupportTicketSchema = new Schema<ISupportTicket>(
   {
     userId: { type: Schema.Types.ObjectId, ref: "User", index: true },
+    courseId: { type: Schema.Types.ObjectId, ref: "Course", index: true },
     name: { type: String, required: true },
     email: { type: String, required: true, lowercase: true, trim: true },
     subject: { type: String, required: true },
