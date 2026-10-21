@@ -90,7 +90,12 @@ export default function EventPopupModal() {
     if (!pathname) return;
 
     // NEVER run promotional overlays on sensitive or learning flows
-    const isSensitive = SENSITIVE_PATHS.some((prefix) => pathname.startsWith(prefix));
+    const isSensitive = SENSITIVE_PATHS.some((prefix) => {
+      if (prefix === "/learn") {
+        return pathname === "/learn" || pathname.startsWith("/learn/");
+      }
+      return pathname.startsWith(prefix);
+    });
     if (isSensitive) {
       setIsOpen(false);
       setPopup(null);

@@ -30,7 +30,7 @@ export default function PublicNavShell({ children }: PublicNavShellProps) {
     pathname.startsWith("/dashboard");
 
   // Dedicated Learning Room: focused distraction-free player
-  const isLearningRoute = pathname.startsWith("/learn");
+  const isLearningRoute = pathname === "/learn" || pathname.startsWith("/learn/");
 
   const shouldHidePublicNav = isAuthRoute || isDashboardRoute || isLearningRoute;
 

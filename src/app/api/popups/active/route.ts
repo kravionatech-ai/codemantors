@@ -23,7 +23,14 @@ export async function GET(req: NextRequest) {
     const pathname = rawPathname.toLowerCase();
 
     // 1. Immediately bypass sensitive flows so promotional overlays NEVER interfere
-    if (SENSITIVE_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    if (
+      SENSITIVE_PREFIXES.some((prefix) => {
+        if (prefix === "/learn") {
+          return pathname === "/learn" || pathname.startsWith("/learn/");
+        }
+        return pathname.startsWith(prefix);
+      })
+    ) {
       return NextResponse.json({ success: true, popup: null });
     }
 
