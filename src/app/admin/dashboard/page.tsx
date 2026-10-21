@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { tabContentVariants } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import Modal from "@/components/ui/Modal";
@@ -533,8 +535,16 @@ function AdminDashboardContent() {
         </button>
       </div>
 
-      {/* Tab: Overview */}
-      {activeTab === "overview" && (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={tabContentVariants}
+        >
+          {/* Tab: Overview */}
+          {activeTab === "overview" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Quick Approvals Card */}
           <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-4">
@@ -901,6 +911,8 @@ function AdminDashboardContent() {
           </div>
         </div>
       )}
+        </motion.div>
+      </AnimatePresence>
 
       {/* Destructive Action Confirmation Modal */}
       <Modal

@@ -3,6 +3,8 @@
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { subtleRise, cardHoverProps } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import Modal from "@/components/ui/Modal";
@@ -213,7 +215,12 @@ function InstructorDashboardContent() {
   }
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={subtleRise}
+      className="space-y-6 max-w-7xl mx-auto"
+    >
       {/* 1. Clean Creator SaaS Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E2E8F0]">
         <div>
@@ -276,39 +283,39 @@ function InstructorDashboardContent() {
 
       {/* 3. Studio Telemetry Metrics Strip */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Total Courses</span>
           <div className="text-xl font-bold text-[#111827]">{stats?.totalCourses || 0}</div>
           <div className="text-[10px] text-[#64748B]">{stats?.publishedCourses || 0} live • {stats?.draftCourses || 0} draft</div>
-        </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Active Learners</span>
           <div className="text-xl font-bold text-[#111827]">{stats?.totalEnrollments || 0}</div>
           <div className="text-[10px] text-[#64748B]">{stats?.uniqueStudents || 0} unique students</div>
-        </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Completion Rate</span>
           <div className="text-xl font-bold text-[#111827]">{stats?.completionRate || 0}%</div>
           <div className="text-[10px] text-[#64748B]">{stats?.completedEnrollments || 0} completed</div>
-        </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Avg Rating</span>
           <div className="text-xl font-bold text-[#111827] flex items-center gap-1">
             <span>{stats?.averageRating || "5.0"}</span>
             <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
           </div>
           <div className="text-[10px] text-[#64748B]">{recentReviews.length} reviews</div>
-        </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Course Revenue</span>
           <div className="text-xl font-bold text-[#0D9488]">₹{(stats?.totalRevenue || 0).toLocaleString()}</div>
           <div className="text-[10px] text-[#64748B]">Via Razorpay</div>
-        </div>
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+        </motion.div>
+        <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.18, ease: "easeOut" }} className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
           <span className="text-[11px] font-medium text-[#64748B] block">Needs Attention</span>
           <div className="text-xl font-bold text-[#D97706]">{(attentionCourses.length || 0) + (stats?.unrepliedReviewsCount || 0)}</div>
           <div className="text-[10px] text-[#64748B]">{stats?.unrepliedReviewsCount || 0} unreplied reviews</div>
-        </div>
+        </motion.div>
       </div>
 
       {/* Attention Alerts Section */}
@@ -738,7 +745,7 @@ function InstructorDashboardContent() {
           </div>
         </form>
       </Modal>
-    </div>
+    </motion.div>
   );
 }
 

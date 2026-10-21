@@ -2,6 +2,8 @@
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
 import { CheckCircle2, AlertCircle, Info, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toastVariants } from "@/lib/motion";
 
 export type ToastType = "success" | "error" | "info";
 
@@ -45,29 +47,37 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       {/* Toast container */}
       <div className="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none">
-        {toasts.map((t) => (
-          <div
-            key={t.id}
-            className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium border transition-all transform translate-y-0 opacity-100 ${
-              t.type === "success"
-                ? "bg-slate-900 border-emerald-500/40 text-emerald-400"
-                : t.type === "error"
-                ? "bg-slate-900 border-rose-500/40 text-rose-400"
-                : "bg-slate-900 border-blue-500/40 text-blue-400"
-            }`}
-          >
-            {t.type === "success" && <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />}
-            {t.type === "error" && <AlertCircle className="w-5 h-5 shrink-0 text-rose-400" />}
-            {t.type === "info" && <Info className="w-5 h-5 shrink-0 text-blue-400" />}
-            <span className="text-slate-200">{t.message}</span>
-            <button
-              onClick={() => removeToast(t.id)}
-              className="ml-auto text-slate-400 hover:text-white"
+        <AnimatePresence mode="popLayout">
+          {toasts.map((t) => (
+            <motion.div
+              key={t.id}
+              layout
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              variants={toastVariants}
+              className={`pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-lg shadow-xl text-sm font-medium border ${
+                t.type === "success"
+                  ? "bg-slate-900 border-emerald-500/40 text-emerald-400"
+                  : t.type === "error"
+                  ? "bg-slate-900 border-rose-500/40 text-rose-400"
+                  : "bg-slate-900 border-blue-500/40 text-blue-400"
+              }`}
             >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        ))}
+              {t.type === "success" && <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />}
+              {t.type === "error" && <AlertCircle className="w-5 h-5 shrink-0 text-rose-400" />}
+              {t.type === "info" && <Info className="w-5 h-5 shrink-0 text-blue-400" />}
+              <span className="text-slate-200">{t.message}</span>
+              <button
+                onClick={() => removeToast(t.id)}
+                className="ml-auto text-slate-400 hover:text-white cursor-pointer"
+                aria-label="Dismiss toast"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );

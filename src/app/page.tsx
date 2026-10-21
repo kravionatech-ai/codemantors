@@ -3,6 +3,8 @@ import Link from "next/link";
 import { connectDB } from "@/lib/db";
 import { Course, Category, LearningPath, Review, User } from "@/models";
 import CourseCard from "@/components/ui/CourseCard";
+import { MotionEntrance } from "@/components/ui/MotionComponents";
+import FaqAccordion from "@/components/ui/FaqAccordion";
 import {
   Code2,
   Video,
@@ -105,7 +107,7 @@ export default async function HomePage() {
       {/* 1. Hero Section */}
       <section className="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-24 border-b border-[#E2E8F0] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-3xl mx-auto space-y-6">
+          <MotionEntrance className="text-center max-w-3xl mx-auto space-y-6">
             {/* Pill Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold text-[#2563EB]">
               <Sparkles className="w-3.5 h-3.5 text-[#06B6D4]" />
@@ -182,7 +184,7 @@ export default async function HomePage() {
                 <span>Verifiable Certificates</span>
               </div>
             </div>
-          </div>
+          </MotionEntrance>
         </div>
       </section>
 
@@ -578,24 +580,7 @@ export default async function HomePage() {
             </h2>
           </div>
 
-          <div className="space-y-4">
-            {faqs.map((faq, i) => (
-              <details
-                key={i}
-                className="group p-5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] [&_summary::-webkit-details-marker]:hidden"
-              >
-                <summary className="flex items-center justify-between cursor-pointer font-bold text-sm text-[#0F172A] group-hover:text-[#2563EB] transition-colors">
-                  <span>{faq.q}</span>
-                  <span className="ml-4 shrink-0 transition duration-300 group-open:-rotate-180 text-[#64748B]">
-                    ▼
-                  </span>
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-[#64748B] leading-relaxed border-t border-[#E2E8F0] pt-3">
-                  {faq.a}
-                </p>
-              </details>
-            ))}
-          </div>
+          <FaqAccordion items={faqs} />
         </div>
       </section>
 

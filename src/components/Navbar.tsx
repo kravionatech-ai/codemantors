@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { dropdownVariants, mobileDrawerVariants } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 import {
@@ -216,51 +218,59 @@ export default function Navbar() {
                   </button>
 
                   {/* Notifications Dropdown */}
-                  {notificationsOpen && (
-                    <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl border border-[#E2E8F0] bg-white shadow-xl p-4 z-50">
-                      <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
-                        <span className="text-sm font-semibold text-[#0F172A]">Notifications</span>
-                        {unreadCount > 0 && (
-                          <button
-                            onClick={markAllNotificationsRead}
-                            className="text-xs text-[#2563EB] hover:underline"
-                          >
-                            Mark all read
-                          </button>
-                        )}
-                      </div>
-                      <div className="mt-3 max-h-72 overflow-y-auto space-y-2">
-                        {notifications.length === 0 ? (
-                          <p className="text-center py-6 text-xs text-[#64748B]">
-                            No notifications yet
-                          </p>
-                        ) : (
-                          notifications.slice(0, 5).map((n) => (
-                            <div
-                              key={n._id}
-                              className={`p-3 rounded-lg text-xs border ${
-                                n.isRead
-                                  ? "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
-                                  : "bg-blue-50/60 border-blue-200 text-[#0F172A]"
-                              }`}
+                  <AnimatePresence>
+                    {notificationsOpen && (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={dropdownVariants}
+                        className="absolute right-0 mt-2 w-80 sm:w-96 rounded-xl border border-[#E2E8F0] bg-white shadow-xl p-4 z-50 origin-top-right"
+                      >
+                        <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+                          <span className="text-sm font-semibold text-[#111827]">Notifications</span>
+                          {unreadCount > 0 && (
+                            <button
+                              onClick={markAllNotificationsRead}
+                              className="text-xs text-[#2563EB] hover:underline cursor-pointer"
                             >
-                              <p className="font-semibold text-[#0F172A]">{n.title}</p>
-                              <p className="mt-0.5 line-clamp-2 text-[#64748B]">{n.message}</p>
-                              {n.link && (
-                                <Link
-                                  href={n.link}
-                                  onClick={() => setNotificationsOpen(false)}
-                                  className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-[#2563EB] font-medium hover:underline"
-                                >
-                                  View details <ExternalLink className="w-3 h-3" />
-                                </Link>
-                              )}
-                            </div>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
+                              Mark all read
+                            </button>
+                          )}
+                        </div>
+                        <div className="mt-3 max-h-72 overflow-y-auto space-y-2">
+                          {notifications.length === 0 ? (
+                            <p className="text-center py-6 text-xs text-[#64748B]">
+                              No notifications yet
+                            </p>
+                          ) : (
+                            notifications.slice(0, 5).map((n) => (
+                              <div
+                                key={n._id}
+                                className={`p-3 rounded-lg text-xs border ${
+                                  n.isRead
+                                    ? "bg-[#F8FAFC] border-[#E2E8F0] text-[#64748B]"
+                                    : "bg-blue-50/60 border-blue-200 text-[#111827]"
+                                }`}
+                              >
+                                <p className="font-semibold text-[#111827]">{n.title}</p>
+                                <p className="mt-0.5 line-clamp-2 text-[#64748B]">{n.message}</p>
+                                {n.link && (
+                                  <Link
+                                    href={n.link}
+                                    onClick={() => setNotificationsOpen(false)}
+                                    className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-[#2563EB] font-medium hover:underline"
+                                  >
+                                    View details <ExternalLink className="w-3 h-3" />
+                                  </Link>
+                                )}
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Dashboard Direct Shortcut */}
@@ -315,61 +325,69 @@ export default function Navbar() {
                   </button>
 
                   {/* Profile Menu Dropdown */}
-                  {userDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-xl border border-[#E2E8F0] bg-white shadow-xl p-2 z-50">
-                      <div className="px-3 py-2 border-b border-[#E2E8F0]">
-                        <p className="text-xs font-semibold text-[#0F172A] truncate">{user.name}</p>
-                        <p className="text-[11px] text-[#64748B] truncate">{user.email}</p>
-                        <span className="inline-block mt-1 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200">
-                          {user.role}
-                        </span>
-                      </div>
-                      <div className="py-1 space-y-0.5">
-                        {user.role === "student" && (
-                          <Link
-                            href="/student/dashboard"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-[#0F172A] hover:bg-slate-50 rounded-lg"
+                  <AnimatePresence>
+                    {userDropdownOpen && (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={dropdownVariants}
+                        className="absolute right-0 mt-2 w-56 rounded-xl border border-[#E2E8F0] bg-white shadow-xl p-2 z-50 origin-top-right"
+                      >
+                        <div className="px-3 py-2 border-b border-[#E2E8F0]">
+                          <p className="text-xs font-semibold text-[#111827] truncate">{user.name}</p>
+                          <p className="text-[11px] text-[#64748B] truncate">{user.email}</p>
+                          <span className="inline-block mt-1 text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200">
+                            {user.role}
+                          </span>
+                        </div>
+                        <div className="py-1 space-y-0.5">
+                          {user.role === "student" && (
+                            <Link
+                              href="/student/dashboard"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 text-xs text-[#111827] hover:bg-slate-50 rounded-lg"
+                            >
+                              <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
+                              Student Dashboard
+                            </Link>
+                          )}
+                          {user.role === "instructor" && (
+                            <Link
+                              href="/instructor/dashboard"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 text-xs text-[#111827] hover:bg-slate-50 rounded-lg"
+                            >
+                              <GraduationCap className="w-3.5 h-3.5 text-[#2563EB]" />
+                              Instructor Studio
+                            </Link>
+                          )}
+                          {(user.role === "admin" || user.role === "super_admin") && (
+                            <Link
+                              href="/admin/dashboard"
+                              onClick={() => setUserDropdownOpen(false)}
+                              className="flex items-center gap-2 px-3 py-2 text-xs text-[#111827] hover:bg-slate-50 rounded-lg"
+                            >
+                              <ShieldAlert className="w-3.5 h-3.5 text-[#DC2626]" />
+                              Admin Panel
+                            </Link>
+                          )}
+                        </div>
+                        <div className="pt-1 border-t border-[#E2E8F0]">
+                          <button
+                            onClick={() => {
+                              setUserDropdownOpen(false);
+                              logout();
+                            }}
+                            className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#DC2626] hover:bg-red-50 rounded-lg font-medium cursor-pointer"
                           >
-                            <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
-                            Student Dashboard
-                          </Link>
-                        )}
-                        {user.role === "instructor" && (
-                          <Link
-                            href="/instructor/dashboard"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-[#0F172A] hover:bg-slate-50 rounded-lg"
-                          >
-                            <GraduationCap className="w-3.5 h-3.5 text-[#2563EB]" />
-                            Instructor Studio
-                          </Link>
-                        )}
-                        {(user.role === "admin" || user.role === "super_admin") && (
-                          <Link
-                            href="/admin/dashboard"
-                            onClick={() => setUserDropdownOpen(false)}
-                            className="flex items-center gap-2 px-3 py-2 text-xs text-[#0F172A] hover:bg-slate-50 rounded-lg"
-                          >
-                            <ShieldAlert className="w-3.5 h-3.5 text-[#DC2626]" />
-                            Admin Panel
-                          </Link>
-                        )}
-                      </div>
-                      <div className="pt-1 border-t border-[#E2E8F0]">
-                        <button
-                          onClick={() => {
-                            setUserDropdownOpen(false);
-                            logout();
-                          }}
-                          className="w-full flex items-center gap-2 px-3 py-2 text-xs text-[#DC2626] hover:bg-red-50 rounded-lg font-medium"
-                        >
-                          <LogOut className="w-3.5 h-3.5" />
-                          Sign Out
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                            <LogOut className="w-3.5 h-3.5" />
+                            Sign Out
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             ) : (
@@ -416,102 +434,110 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Menu Drawer */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-b border-[#E2E8F0] bg-white px-4 pt-2 pb-6 space-y-3">
-          <div className="space-y-1">
-            {navLinks.map((link) => (
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={mobileDrawerVariants}
+            className="md:hidden border-b border-[#E2E8F0] bg-white px-4 pt-2 pb-6 space-y-3 overflow-hidden"
+          >
+            <div className="space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-lg text-sm font-medium text-[#111827] hover:bg-slate-50"
+                >
+                  {link.name}
+                </Link>
+              ))}
+
               <Link
-                key={link.name}
-                href={link.href}
+                href="/course-basket"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
+                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-[#111827] hover:bg-slate-50"
               >
-                {link.name}
-              </Link>
-            ))}
-
-            <Link
-              href="/course-basket"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
-            >
-              <span className="flex items-center gap-2">
-                <ShoppingBag className="w-4 h-4 text-[#2563EB]" />
-                Course Basket
-              </span>
-              {cartCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#2563EB] text-xs font-bold">
-                  {cartCount}
+                <span className="flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-[#2563EB]" />
+                  Course Basket
                 </span>
-              )}
-            </Link>
-          </div>
+                {cartCount > 0 && (
+                  <span className="px-2 py-0.5 rounded-full bg-blue-100 text-[#2563EB] text-xs font-bold">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            </div>
 
-          <div className="pt-3 border-t border-[#E2E8F0]">
-            {user ? (
-              <div className="space-y-2">
-                <div className="px-3 py-1">
-                  <p className="text-xs font-semibold text-[#0F172A]">{user.name}</p>
-                  <p className="text-[11px] text-[#64748B]">{user.email}</p>
+            <div className="pt-3 border-t border-[#E2E8F0]">
+              {user ? (
+                <div className="space-y-2">
+                  <div className="px-3 py-1">
+                    <p className="text-xs font-semibold text-[#111827]">{user.name}</p>
+                    <p className="text-[11px] text-[#64748B]">{user.email}</p>
+                  </div>
+                  {user.role === "student" && (
+                    <Link
+                      href="/student/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-sm font-medium text-[#111827] hover:bg-slate-50"
+                    >
+                      Student Dashboard
+                    </Link>
+                  )}
+                  {user.role === "instructor" && (
+                    <Link
+                      href="/instructor/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-sm font-medium text-[#111827] hover:bg-slate-50"
+                    >
+                      Instructor Studio
+                    </Link>
+                  )}
+                  {user.role === "admin" && (
+                    <Link
+                      href="/admin/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-3 py-2 rounded-lg text-sm font-medium text-[#111827] hover:bg-slate-50"
+                    >
+                      Admin Panel
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-[#DC2626] hover:bg-red-50 cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
                 </div>
-                {user.role === "student" && (
+              ) : (
+                <div className="grid grid-cols-2 gap-2 pt-2">
                   <Link
-                    href="/student/dashboard"
+                    href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
+                    className="w-full text-center px-3 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] text-[#111827] hover:bg-slate-50"
                   >
-                    Student Dashboard
+                    Log In
                   </Link>
-                )}
-                {user.role === "instructor" && (
                   <Link
-                    href="/instructor/dashboard"
+                    href="/register"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
+                    className="w-full text-center px-3 py-2 rounded-lg text-xs font-semibold bg-[#2563EB] text-white hover:bg-blue-700 shadow-xs"
                   >
-                    Instructor Studio
+                    Start Learning
                   </Link>
-                )}
-                {user.role === "admin" && (
-                  <Link
-                    href="/admin/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
-                  >
-                    Admin Panel
-                  </Link>
-                )}
-                <button
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    logout();
-                  }}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-[#DC2626] hover:bg-red-50"
-                >
-                  Sign Out
-                </button>
-              </div>
-            ) : (
-              <div className="grid grid-cols-2 gap-2 pt-2">
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center px-3 py-2 rounded-lg text-xs font-semibold border border-[#E2E8F0] text-[#0F172A] hover:bg-slate-50"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="w-full text-center px-3 py-2 rounded-lg text-xs font-semibold bg-[#172554] text-white hover:bg-[#1E3A8A]"
-                >
-                  Start Learning
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
     </>
   );

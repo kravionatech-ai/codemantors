@@ -2,6 +2,8 @@
 
 import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { accordionVariants } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import {
   Search,
@@ -525,64 +527,72 @@ export default function LearningPathsClient({ initialPaths }: LearningPathsClien
                       </button>
                     </div>
 
-                    {isCurriculumExpanded && (
-                      <div className="px-5 sm:px-6 pb-6 pt-2 border-t border-[#E2E8F0]/60 space-y-3">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                          {path.courses?.map((course, idx) => {
-                            const enr = enrollmentMap.get(course._id.toString());
-                            const isCompleted = enr && enr.progressPercentage >= 100;
-                            const isInProgress = enr && enr.progressPercentage > 0 && !isCompleted;
-                            const durationHours = course.totalDurationMinutes
-                              ? Math.round(course.totalDurationMinutes / 60)
-                              : 6;
+                    <AnimatePresence>
+                      {isCurriculumExpanded && (
+                        <motion.div
+                          initial="hidden"
+                          animate="visible"
+                          exit="exit"
+                          variants={accordionVariants}
+                          className="px-5 sm:px-6 pb-6 pt-2 border-t border-[#E2E8F0]/60 space-y-3"
+                        >
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            {path.courses?.map((course, idx) => {
+                              const enr = enrollmentMap.get(course._id.toString());
+                              const isCompleted = enr && enr.progressPercentage >= 100;
+                              const isInProgress = enr && enr.progressPercentage > 0 && !isCompleted;
+                              const durationHours = course.totalDurationMinutes
+                                ? Math.round(course.totalDurationMinutes / 60)
+                                : 6;
 
-                            return (
-                              <Link
-                                key={course._id.toString()}
-                                href={`/courses/${course.slug}`}
-                                className="group p-4 rounded-lg border border-[#E2E8F0] bg-white hover:border-[#2563EB]/40 hover:shadow-xs transition-all flex flex-col justify-between"
-                              >
-                                <div>
-                                  <div className="flex items-center justify-between text-[11px] mb-2">
-                                    <span className="font-mono font-bold text-[#2563EB]">
-                                      STAGE 0{idx + 1}
-                                    </span>
-                                    {isCompleted ? (
-                                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#16A34A] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                                        <Check className="w-3 h-3" /> Completed
+                              return (
+                                <Link
+                                  key={course._id.toString()}
+                                  href={`/courses/${course.slug}`}
+                                  className="group p-4 rounded-lg border border-[#E2E8F0] bg-white hover:border-[#2563EB]/40 hover:shadow-xs transition-all flex flex-col justify-between"
+                                >
+                                  <div>
+                                    <div className="flex items-center justify-between text-[11px] mb-2">
+                                      <span className="font-mono font-bold text-[#2563EB]">
+                                        STAGE 0{idx + 1}
                                       </span>
-                                    ) : isInProgress ? (
-                                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                                        In Progress ({enr.progressPercentage}%)
-                                      </span>
-                                    ) : (
-                                      <span className="text-[10px] font-medium text-[#64748B] bg-slate-100 px-2 py-0.5 rounded">
-                                        {course.level}
-                                      </span>
+                                      {isCompleted ? (
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#16A34A] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                                          <Check className="w-3 h-3" /> Completed
+                                        </span>
+                                      ) : isInProgress ? (
+                                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                                          In Progress ({enr.progressPercentage}%)
+                                        </span>
+                                      ) : (
+                                        <span className="text-[10px] font-medium text-[#64748B] bg-slate-100 px-2 py-0.5 rounded">
+                                          {course.level}
+                                        </span>
+                                      )}
+                                    </div>
+
+                                    <h4 className="text-xs sm:text-sm font-semibold text-[#111827] group-hover:text-[#2563EB] transition-colors line-clamp-2">
+                                      {course.title}
+                                    </h4>
+
+                                    {course.subtitle && (
+                                      <p className="text-[11px] text-[#64748B] line-clamp-1 mt-1">
+                                        {course.subtitle}
+                                      </p>
                                     )}
                                   </div>
 
-                                  <h4 className="text-xs sm:text-sm font-semibold text-[#111827] group-hover:text-[#2563EB] transition-colors line-clamp-2">
-                                    {course.title}
-                                  </h4>
-
-                                  {course.subtitle && (
-                                    <p className="text-[11px] text-[#64748B] line-clamp-1 mt-1">
-                                      {course.subtitle}
-                                    </p>
-                                  )}
-                                </div>
-
-                                <div className="mt-4 pt-2.5 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
-                                  <span>~{durationHours} Hours • Syllabus</span>
-                                  <ArrowRight className="w-3.5 h-3.5 text-[#2563EB] group-hover:translate-x-1 transition-transform" />
-                                </div>
-                              </Link>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    )}
+                                  <div className="mt-4 pt-2.5 border-t border-[#E2E8F0] flex items-center justify-between text-[11px] text-[#64748B]">
+                                    <span>~{durationHours} Hours • Syllabus</span>
+                                    <ArrowRight className="w-3.5 h-3.5 text-[#2563EB] group-hover:translate-x-1 transition-transform" />
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               );

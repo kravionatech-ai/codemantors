@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Star, Clock, BookOpen, Award, CheckCircle, ShoppingBag, Loader2, Video, FileText, Layers } from "lucide-react";
+import { motion } from "framer-motion";
+import { cardHoverProps } from "@/lib/motion";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -65,7 +67,10 @@ export default function CourseCard({ course, progress, isEnrolled, continueLesso
   };
 
   return (
-    <div className="group flex flex-col rounded-xl border border-[#E2E8F0] bg-white overflow-hidden hover:border-[#CBD5E1] hover:shadow-xs transition-all">
+    <motion.div
+      className="group flex flex-col rounded-xl border border-[#E2E8F0] bg-white overflow-hidden hover:border-[#CBD5E1] hover:shadow-xs transition-colors"
+      {...cardHoverProps}
+    >
       {/* Thumbnail */}
       <Link href={destinationHref} className="relative aspect-video w-full overflow-hidden bg-slate-100">
         <img
@@ -264,6 +269,6 @@ export default function CourseCard({ course, progress, isEnrolled, continueLesso
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

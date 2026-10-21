@@ -3,6 +3,8 @@
 import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { tabContentVariants, subtleRise, cardHoverProps } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import CourseCard from "@/components/ui/CourseCard";
@@ -244,7 +246,10 @@ function StudentDashboardContent() {
 
       {/* 2. Primary Next Action: Continue Learning Resume Card */}
       {mostRecentResume && mostRecentResume.courseSlug && mostRecentResume.lastLessonId ? (
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 hover:border-[#CBD5E1] transition-colors">
+        <motion.div
+          className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 hover:border-[#CBD5E1] transition-colors"
+          {...cardHoverProps}
+        >
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
@@ -277,7 +282,7 @@ function StudentDashboardContent() {
             <span>Resume Lesson</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
-        </div>
+        </motion.div>
       ) : (
         /* Empty State when student has no courses yet */
         enrollments?.length === 0 && (
@@ -365,8 +370,16 @@ function StudentDashboardContent() {
         </button>
       </div>
 
-      {/* Tab 1: Enrolled Courses */}
-      {activeTab === "courses" && (
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          variants={tabContentVariants}
+        >
+          {/* Tab 1: Enrolled Courses */}
+          {activeTab === "courses" && (
         <div className="space-y-6">
           {/* Sub-Filter Controls for Course Status Separation */}
           <div className="flex items-center gap-2">
@@ -752,6 +765,8 @@ function StudentDashboardContent() {
           </form>
         </div>
       )}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }
