@@ -8,6 +8,7 @@ import { tabContentVariants, subtleRise, cardHoverProps } from "@/lib/motion";
 import { useAuth } from "@/context/AuthContext";
 import { useToast } from "@/context/ToastContext";
 import CourseCard from "@/components/ui/CourseCard";
+import { StaggerContainer, StaggerItem, RevealSection } from "@/components/ui/MotionComponents";
 import CertificateCard from "@/components/learning/CertificateCard";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 import FormattedContentRenderer from "@/components/ui/FormattedContentRenderer";
@@ -416,71 +417,72 @@ function StudentDashboardContent() {
           </div>
 
           {displayedEnrollments && displayedEnrollments.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {displayedEnrollments.map((enr: any) => {
                 const c = enr.courseId;
                 if (!c) return null;
                 return (
-                  <div
-                    key={enr._id}
-                    className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all"
-                  >
-                    <div>
-                      <div className="h-40 bg-slate-100 relative overflow-hidden">
-                        <img
-                          src={c.thumbnail || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80"}
-                          alt={c.title}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white/95 text-[#111827] shadow-2xs border border-[#E2E8F0]">
-                          {enr.status}
-                        </span>
-                      </div>
-                      <div className="p-5 space-y-3">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
-                          {c.level || "Intermediate"}
-                        </span>
-                        <h3 className="text-base font-bold text-[#111827] line-clamp-1">
-                          {c.title}
-                        </h3>
-                        <p className="text-xs text-[#64748B] line-clamp-2">
-                          {c.subtitle || c.description}
-                        </p>
-                        {/* Progress */}
-                        <div className="space-y-1 pt-1">
-                          <div className="flex justify-between text-xs text-[#64748B]">
-                            <span>Progress</span>
-                            <span className="font-semibold text-[#111827]">{enr.progressPercentage || 0}%</span>
-                          </div>
-                          <div className="w-full bg-[#E2E8F0] rounded-full h-1.5">
-                            <div
-                              className="bg-[#2563EB] h-1.5 rounded-full"
-                              style={{ width: `${enr.progressPercentage || 0}%` }}
-                            />
+                  <StaggerItem key={enr._id}>
+                    <div
+                      className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all h-full"
+                    >
+                      <div>
+                        <div className="h-40 bg-slate-100 relative overflow-hidden">
+                          <img
+                            src={c.thumbnail || "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&q=80"}
+                            alt={c.title}
+                            className="w-full h-full object-cover"
+                          />
+                          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white/95 text-[#111827] shadow-2xs border border-[#E2E8F0]">
+                            {enr.status}
+                          </span>
+                        </div>
+                        <div className="p-5 space-y-3">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                            {c.level || "Intermediate"}
+                          </span>
+                          <h3 className="text-base font-bold text-[#111827] line-clamp-1">
+                            {c.title}
+                          </h3>
+                          <p className="text-xs text-[#64748B] line-clamp-2">
+                            {c.subtitle || c.description}
+                          </p>
+                          {/* Progress */}
+                          <div className="space-y-1 pt-1">
+                            <div className="flex justify-between text-xs text-[#64748B]">
+                              <span>Progress</span>
+                              <span className="font-semibold text-[#111827]">{enr.progressPercentage || 0}%</span>
+                            </div>
+                            <div className="w-full bg-[#E2E8F0] rounded-full h-1.5">
+                              <div
+                                className="bg-[#2563EB] h-1.5 rounded-full"
+                                style={{ width: `${enr.progressPercentage || 0}%` }}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="p-5 pt-0">
-                      {(() => {
-                        const nextLessonId = enr.lastAccessedLessonId || c.modules?.[0]?.lessons?.[0]?._id;
-                        const targetHref = nextLessonId ? `/learn/${c.slug}/${nextLessonId}` : `/courses/${c.slug}`;
-                        return (
-                          <Link
-                            href={targetHref}
-                            className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
-                          >
-                            <span>{enr.progressPercentage >= 100 ? "Review Course" : "Continue Learning"}</span>
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </Link>
-                        );
-                      })()}
+                      <div className="p-5 pt-0">
+                        {(() => {
+                          const nextLessonId = enr.lastAccessedLessonId || c.modules?.[0]?.lessons?.[0]?._id;
+                          const targetHref = nextLessonId ? `/learn/${c.slug}/${nextLessonId}` : `/courses/${c.slug}`;
+                          return (
+                            <Link
+                              href={targetHref}
+                              className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                            >
+                              <span>{enr.progressPercentage >= 100 ? "Review Course" : "Continue Learning"}</span>
+                              <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                          );
+                        })()}
+                      </div>
                     </div>
-                  </div>
+                  </StaggerItem>
                 );
               })}
-            </div>
+            </StaggerContainer>
           ) : (
             <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center space-y-3">
               <BookOpen className="w-10 h-10 text-[#94A3B8] mx-auto" />

@@ -39,15 +39,36 @@ export const subtleRise: Variants = {
   },
 };
 
+// 2b. Scroll Reveal Preset (Visible scroll-triggered viewport entrance)
+export const scrollRevealVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
 // 3. Staggered Container for Lists / Grids
 export const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.04,
-      delayChildren: 0.02,
+      staggerChildren: 0.08,
+      delayChildren: 0.04,
     },
+  },
+};
+
+export const staggerContainerVariants = staggerContainer;
+
+export const staggerItemVariants: Variants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" },
   },
 };
 
@@ -58,7 +79,7 @@ export const cardHoverTransition: Transition = {
 };
 
 export const cardHoverProps = {
-  whileHover: { y: -2, transition: cardHoverTransition },
+  whileHover: { y: -3, transition: cardHoverTransition },
   whileTap: { y: 0, scale: 0.995, transition: { duration: 0.1 } },
 };
 

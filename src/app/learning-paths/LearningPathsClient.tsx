@@ -4,6 +4,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { accordionVariants } from "@/lib/motion";
+import { StaggerContainer, StaggerItem, RevealSection } from "@/components/ui/MotionComponents";
 import { useAuth } from "@/context/AuthContext";
 import {
   Search,
@@ -386,17 +387,17 @@ export default function LearningPathsClient({ initialPaths }: LearningPathsClien
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
+          <StaggerContainer className="space-y-6">
             {filteredPaths.map((path) => {
               const progress = getPathProgress(path);
               const actionableCourse = getActionableCourse(path);
               const isCurriculumExpanded = Boolean(expandedCurriculums[path._id]);
 
               return (
-                <div
-                  key={path._id}
-                  className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden transition-all hover:border-[#CBD5E1]"
-                >
+                <StaggerItem key={path._id}>
+                  <div
+                    className="bg-white border border-[#E2E8F0] rounded-xl shadow-xs overflow-hidden transition-all hover:border-[#CBD5E1]"
+                  >
                   {/* Card Header & Primary Telemetry */}
                   <div className="p-5 sm:p-6 space-y-4">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
@@ -595,9 +596,10 @@ export default function LearningPathsClient({ initialPaths }: LearningPathsClien
                     </AnimatePresence>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              </StaggerItem>
+            );
+          })}
+        </StaggerContainer>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import CourseCard from "@/components/ui/CourseCard";
+import { StaggerContainer, StaggerItem, RevealSection } from "@/components/ui/MotionComponents";
 import {
   Search,
   Filter,
@@ -292,11 +293,13 @@ export default function CoursesClient() {
             </div>
           ) : courses.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <StaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map((course) => (
-                  <CourseCard key={course._id} course={course} />
+                  <StaggerItem key={course._id}>
+                    <CourseCard course={course} />
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerContainer>
 
               {/* Pagination */}
               {pagination.totalPages > 1 && (
