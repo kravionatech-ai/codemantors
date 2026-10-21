@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bgNode" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a120e"/>
+      <stop offset="100%" stop-color="#030805"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgNode)"/>
+
+  <!-- Matrix/Terminal subtle green code in background -->
+  <g stroke="#14532d" stroke-width="0.8" opacity="0.3">
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+
+  <!-- node text in center -->
+  <g transform="translate(400, 225)" text-anchor="middle" dominant-baseline="central">
+    <text font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="82" fill="#22c55e" letter-spacing="3">
+      node<tspan fill="#4ade80">.js</tspan>
+    </text>
+  </g>
+</svg>

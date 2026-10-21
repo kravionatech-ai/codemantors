@@ -27,8 +27,8 @@ export function RevealSection({
   children,
   className = "",
   delay = 0,
-  threshold = 0.15,
-  yOffset = 20,
+  threshold = 0.05,
+  yOffset = 16,
 }: RevealSectionProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -40,8 +40,8 @@ export function RevealSection({
     <motion.div
       initial={{ opacity: 0, y: yOffset }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: threshold }}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      viewport={{ once: true, amount: threshold, margin: "150px" }}
+      transition={{ duration: 0.45, delay, ease: "easeOut" }}
       className={className}
     >
       {children}
@@ -66,7 +66,7 @@ export function StaggerContainer({
   className = "",
   delayChildren = 0.04,
   staggerChildren = 0.08,
-  threshold = 0.1,
+  threshold = 0.05,
 }: StaggerContainerProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -78,7 +78,7 @@ export function StaggerContainer({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, amount: threshold }}
+      viewport={{ once: true, amount: threshold, margin: "150px" }}
       variants={{
         hidden: { opacity: 0 },
         visible: {

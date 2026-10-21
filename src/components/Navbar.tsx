@@ -92,18 +92,13 @@ export default function Navbar() {
       .catch(() => {});
   }, []);
 
-  const navLinks: { name: string; href: string }[] = siteSettings?.navigation?.headerLinks?.length > 0
-    ? siteSettings.navigation.headerLinks
-        .filter((l: any) => l.isVisible !== false)
-        .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
-        .map((l: any) => ({ name: l.label, href: l.href }))
-    : [
-        { name: "Courses", href: "/courses" },
-        { name: "Learning Paths", href: "/learning-paths" },
-        { name: "Mentors", href: "/#mentors" },
-        { name: "Blog", href: "/blog" },
-        { name: "About", href: "/about" },
-      ];
+  const navLinks = [
+    { name: "Courses", href: "/courses" },
+    { name: "Learning Paths", href: "/learning-paths" },
+    { name: "Mentors", href: "/#mentors" },
+    { name: "Blog", href: "/blog" },
+    { name: "About", href: "/about" },
+  ];
 
   return (
     <>
@@ -176,20 +171,20 @@ export default function Navbar() {
               <span>Search courses, mentors...</span>
             </Link>
 
-            {/* Course Basket Button */}
-            <Link
-              href="/course-basket"
-              className="relative p-2 rounded-lg text-[#64748B] hover:text-[#172554] hover:bg-slate-100 transition-colors"
-              title="Course Basket"
-              aria-label="Course Basket"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              {cartCount > 0 && (
+            {/* Course Basket Button (Shown when items are in cart) */}
+            {cartCount > 0 && (
+              <Link
+                href="/course-basket"
+                className="relative p-2 rounded-lg text-[#64748B] hover:text-[#172554] hover:bg-slate-100 transition-colors"
+                title="Course Basket"
+                aria-label="Course Basket"
+              >
+                <ShoppingBag className="w-5 h-5" />
                 <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#2563EB] text-[10px] font-bold text-white flex items-center justify-center">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
-              )}
-            </Link>
+              </Link>
+            )}
 
             {user ? (
               <div className="flex items-center gap-2.5">

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bgPy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b111e"/>
+      <stop offset="100%" stop-color="#04070d"/>
+    </linearGradient>
+    <linearGradient id="pyBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#387eb8"/>
+      <stop offset="100%" stop-color="#366994"/>
+    </linearGradient>
+    <linearGradient id="pyYellow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe873"/>
+      <stop offset="100%" stop-color="#ffd43b"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgPy)"/>
+
+  <!-- Subtle code grid lines -->
+  <g stroke="#1e293b" stroke-width="0.8" opacity="0.4">
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+  </g>
+
+  <!-- Python Logo centered -->
+  <g transform="translate(400, 225) scale(1.4)">
+    <!-- Blue snake -->
+    <path fill="url(#pyBlue)" d="M -0.5,-54 C -31,-54 -30,-40 -30,-40 L -30,-26 L -0.5,-26 L -0.5,-20 L -42,-20 C -56,-20 -68,-8 -68,14 C -68,34 -58,35 -58,35 L -49,35 L -49,20 C -49,5 -38,-5 -22,-5 L 9,-5 C 24,-5 35,-16 35,-31 C 35,-47 24,-54 -0.5,-54 Z M -16,-43 C -13,-43 -10,-40 -10,-37 C -10,-34 -13,-31 -16,-31 C -19,-31 -22,-34 -22,-37 C -22,-40 -19,-43 -16,-43 Z" />
+    <!-- Yellow snake -->
+    <path fill="url(#pyYellow)" d="M 0.5,54 C 31,54 30,40 30,40 L 30,26 L 0.5,26 L 0.5,20 L 42,20 C 56,20 68,8 68,-14 C 68,-34 58,-35 58,-35 L 49,-35 L 49,-20 C 49,-5 38,5 22,5 L -9,5 C -24,5 -35,16 -35,31 C -35,47 -24,54 0.5,54 Z M 16,43 C 13,43 10,40 10,37 C 10,34 13,31 16,31 C 19,31 22,34 22,37 C 22,40 19,43 16,43 Z" />
+  </g>
+</svg>

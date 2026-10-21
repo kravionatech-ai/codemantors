@@ -168,10 +168,11 @@ export default async function HomePage() {
       title: "React.js for Beginners",
       slug: "react-js-for-beginners",
       subtitle: "Learn modern React with Hooks, routing, API integration and build real projects.",
-      thumbnail: "/images/course-react.jpg",
+      thumbnail: "/images/course-react.svg",
       category: "Frontend",
       level: "Beginner",
       badge: "Best Seller",
+      actionLabel: "Add to Cart",
       ratingAverage: 4.9,
       ratingCount: 1250,
       enrolledCount: 3420,
@@ -189,10 +190,11 @@ export default async function HomePage() {
       title: "Next.js Full-Stack Development",
       slug: "nextjs-15-react-19-mastery",
       subtitle: "Build complete full-stack applications with Next.js, MongoDB and deployment.",
-      thumbnail: "/images/course-code.jpg",
+      thumbnail: "/images/course-nextjs.svg",
       category: "Full Stack",
       level: "Intermediate",
       badge: "Hot",
+      actionLabel: "Enroll Now",
       ratingAverage: 4.9,
       ratingCount: 850,
       enrolledCount: 2150,
@@ -210,10 +212,11 @@ export default async function HomePage() {
       title: "Python for Data Analysis",
       slug: "python-programming",
       subtitle: "Learn data analysis, visualization and real-world data projects using Python.",
-      thumbnail: "/images/course-python.jpg",
+      thumbnail: "/images/course-python.svg",
       category: "Data Science",
       level: "Beginner",
       badge: "New",
+      actionLabel: "Add to Cart",
       ratingAverage: 4.8,
       ratingCount: 640,
       enrolledCount: 1820,
@@ -231,10 +234,10 @@ export default async function HomePage() {
       title: "Node.js & Express API Development",
       slug: featuredCourses.find((c: any) => c.slug === "nodejs-express-backend") ? "nodejs-express-backend" : "rest-api-development",
       subtitle: "Build scalable REST APIs, authentication and deployment with Node.js.",
-      thumbnail: "/images/course-backend.jpg",
+      thumbnail: "/images/course-node.svg",
       category: "Backend",
       level: "Intermediate",
-      badge: "Popular",
+      actionLabel: "Enroll Now",
       ratingAverage: 4.8,
       ratingCount: 920,
       enrolledCount: 2640,
@@ -575,19 +578,19 @@ export default async function HomePage() {
             </Link>
           </div>
 
-          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
+          <StaggerContainer className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
             {popularCategories.map((cat) => {
               const Icon = cat.icon;
               return (
                 <StaggerItem key={cat.slug}>
                   <Link
                     href={`/courses?category=${encodeURIComponent(cat.name)}`}
-                    className="p-4 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-xs transition-all flex flex-col items-center text-center h-full group"
+                    className="p-3 sm:p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-xs transition-all flex flex-col items-center text-center h-full group"
                   >
-                    <div className={`w-12 h-12 rounded-xl ${cat.bgColor} flex items-center justify-center mb-3 group-hover:scale-105 transition-transform`}>
-                      <Icon className="w-6 h-6" />
+                    <div className={`w-11 h-11 rounded-xl ${cat.bgColor} flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform`}>
+                      <Icon className="w-5 h-5" />
                     </div>
-                    <h3 className="font-bold text-xs sm:text-sm text-[#14213D] group-hover:text-[#2563EB] transition-colors line-clamp-1">
+                    <h3 className="font-bold text-[12px] sm:text-[13px] text-[#14213D] group-hover:text-[#2563EB] transition-colors leading-tight">
                       {cat.name}
                     </h3>
                     <p className="text-[11px] text-[#64748B] mt-1">
@@ -627,7 +630,7 @@ export default async function HomePage() {
           <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {referenceCourses.map((c) => (
               <StaggerItem key={c.slug}>
-                <CourseCard course={c as any} />
+                <CourseCard course={c as any} variant="reference" />
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -962,39 +965,46 @@ export default async function HomePage() {
       </section>
 
       {/* 9. Image-Based Bottom Call-To-Action Banner */}
-      <section className="relative overflow-hidden bg-[#14264F] py-20 text-white">
-        {/* Background Visual Overlay */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/images/cta-developer.jpg"
-            alt="Developer coding background"
-            className="w-full h-full object-cover object-right opacity-30"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0B1730] via-[#14264F]/95 to-[#14264F]/80" />
-        </div>
+      <section className="relative overflow-hidden bg-[#14264F] py-16 lg:py-20 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <RevealSection threshold={0.15} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            {/* Left Content Column */}
+            <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+              <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-white tracking-tight leading-tight">
+                Ready to Accelerate Your<br className="hidden sm:inline" /> Software Engineering Career?
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                Join thousands of learners who are building real skills and real projects with CodeMentors.
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
+                <Link
+                  href="/register"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-[#2563EB] hover:bg-blue-600 text-white font-semibold text-sm shadow-sm transition-colors text-center"
+                >
+                  Get Started Now →
+                </Link>
+                <Link
+                  href="/courses"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-sm border border-white/20 transition-colors text-center"
+                >
+                  Explore Courses
+                </Link>
+              </div>
+            </div>
 
-        <RevealSection threshold={0.15} className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Ready to Accelerate Your Software Engineering Career?
-          </h2>
-          <p className="text-sm sm:text-base text-slate-300 max-w-xl mx-auto leading-relaxed">
-            Join thousands of learners who are building real skills and real projects with CodeMentors.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              href="/register"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-[#2563EB] hover:bg-blue-600 text-white font-semibold text-sm shadow-sm transition-colors"
-            >
-              Get Started Now →
-            </Link>
-            <Link
-              href="/courses"
-              className="w-full sm:w-auto px-7 py-3.5 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-sm border border-white/20 transition-colors"
-            >
-              Explore Courses
-            </Link>
-          </div>
-        </RevealSection>
+            {/* Right Developer Visual Column */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 max-w-md w-full aspect-[4/3] bg-slate-900">
+                <img
+                  src="/images/cta-developer.jpg"
+                  alt="Developer working on laptop"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#14264F]/50 via-transparent to-transparent pointer-events-none" />
+              </div>
+            </div>
+          </RevealSection>
+        </div>
       </section>
     </div>
   );

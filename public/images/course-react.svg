@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" width="800" height="450">
+  <defs>
+    <linearGradient id="bgReact" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a101f"/>
+      <stop offset="100%" stop-color="#050811"/>
+    </linearGradient>
+    <filter id="glowReact" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#bgReact)"/>
+  
+  <!-- Subtle code grid lines -->
+  <g stroke="#1e293b" stroke-width="0.8" opacity="0.4">
+    <line x1="0" y1="90" x2="800" y2="90"/>
+    <line x1="0" y1="180" x2="800" y2="180"/>
+    <line x1="0" y1="270" x2="800" y2="270"/>
+    <line x1="0" y1="360" x2="800" y2="360"/>
+    <line x1="160" y1="0" x2="160" y2="450"/>
+    <line x1="320" y1="0" x2="320" y2="450"/>
+    <line x1="480" y1="0" x2="480" y2="450"/>
+    <line x1="640" y1="0" x2="640" y2="450"/>
+  </g>
+
+  <!-- React Atom -->
+  <g transform="translate(400, 225)" filter="url(#glowReact)">
+    <circle cx="0" cy="0" r="22" fill="#00d8ff"/>
+    <ellipse rx="135" ry="52" fill="none" stroke="#00d8ff" stroke-width="9" />
+    <ellipse rx="135" ry="52" fill="none" stroke="#00d8ff" stroke-width="9" transform="rotate(60)" />
+    <ellipse rx="135" ry="52" fill="none" stroke="#00d8ff" stroke-width="9" transform="rotate(120)" />
+  </g>
+</svg>
