@@ -33,6 +33,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 
 export default function InstructorCoursesPage() {
@@ -51,6 +53,8 @@ export default function InstructorCoursesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [formatFilter, setFormatFilter] = useState("all");
   const [sortOrder, setSortOrder] = useState("newest");
+  const [viewMode, setViewMode] = useState<"table" | "grid">("table");
+  const [limitsUsage, setLimitsUsage] = useState<any>(null);
 
   // Deletion Modal
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -107,6 +111,14 @@ export default function InstructorCoursesPage() {
   useEffect(() => {
     if (!authLoading && isInstructorOrAdmin) {
       fetchCourses();
+      fetch("/api/instructor/limits")
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.usage) {
+            setLimitsUsage(data.usage);
+          }
+        })
+        .catch(() => {});
     }
   }, [authLoading, isInstructorOrAdmin, currentPage, statusFilter, formatFilter, sortOrder]);
 
@@ -248,7 +260,7 @@ export default function InstructorCoursesPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
         <div>
-          <h1 className="text-2xl font-black text-[#172554] tracking-tight">Course Management Studio</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827]">Course Management Studio</h1>
           <p className="text-xs text-[#64748B] mt-0.5">
             Create, duplicate, edit curriculum, manage independent SEO, and publish courses.
           </p>
@@ -256,39 +268,97 @@ export default function InstructorCoursesPage() {
 
         <Link
           href="/instructor/dashboard?action=create"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-semibold text-xs shadow-xs transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-semibold text-xs shadow-xs transition-colors self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>New Course</span>
         </Link>
       </div>
 
+      {/* Author Quotas & Publishing Summary */}
+      {limitsUsage && (
+        <div className="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="font-semibold text-[#111827]">Author Quotas:</span>
+            <span className="text-[#64748B]">
+              Published: <strong className="text-[#111827]">{limitsUsage.activeCourses}/{limitsUsage.maxActiveCourses}</strong>
+            </span>
+            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+            <span className="text-[#64748B]">
+              Drafts: <strong className="text-[#111827]">{limitsUsage.draftCourses}/{limitsUsage.maxDraftCourses}</strong>
+            </span>
+            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+            <span className="text-[#64748B]">
+              Pricing: <strong className="text-[#111827]">{limitsUsage.canCreatePaidCourses ? `₹${limitsUsage.minCoursePrice.toLocaleString()} – ₹${limitsUsage.maxCoursePrice.toLocaleString()}` : "Free only"}</strong>
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            {limitsUsage.requireCourseApproval ? (
+              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-[#D97706] border border-amber-200">
+                Admin Review Required
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
+                Instant Publishing Enabled
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Filter and Search Bar */}
       <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-3">
-        {/* Status Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-semibold">
-          {[
-            { id: "all", label: "All Statuses" },
-            { id: "published", label: "Published" },
-            { id: "draft", label: "Drafts" },
-            { id: "pending_review", label: "Pending Review" },
-            { id: "archived", label: "Archived" },
-          ].map((tab) => (
+        {/* Status Tabs and View Switcher */}
+        <div className="flex items-center justify-between gap-2 flex-wrap">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs font-semibold">
+            {[
+              { id: "all", label: "All Statuses" },
+              { id: "published", label: "Published" },
+              { id: "draft", label: "Drafts" },
+              { id: "pending_review", label: "Pending Review" },
+              { id: "archived", label: "Archived" },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setStatusFilter(tab.id);
+                  setCurrentPage(1);
+                }}
+                className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+                  statusFilter === tab.id
+                    ? "bg-[#2563EB] text-white"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-1 border border-[#E2E8F0] rounded-lg p-0.5 bg-slate-50">
             <button
-              key={tab.id}
-              onClick={() => {
-                setStatusFilter(tab.id);
-                setCurrentPage(1);
-              }}
-              className={`px-3 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
-                statusFilter === tab.id
-                  ? "bg-[#172554] text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              type="button"
+              onClick={() => setViewMode("table")}
+              className={`p-1.5 rounded text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                viewMode === "table" ? "bg-white text-[#2563EB] shadow-2xs" : "text-[#64748B] hover:text-[#111827]"
               }`}
+              title="Table View"
             >
-              {tab.label}
+              <List className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Table</span>
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => setViewMode("grid")}
+              className={`p-1.5 rounded text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer ${
+                viewMode === "grid" ? "bg-white text-[#2563EB] shadow-2xs" : "text-[#64748B] hover:text-[#111827]"
+              }`}
+              title="Grid View"
+            >
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Grid</span>
+            </button>
+          </div>
         </div>
 
         {/* Search & Select Controls */}
@@ -355,6 +425,148 @@ export default function InstructorCoursesPage() {
               ? "Try resetting your search filters or viewing all statuses."
               : "You haven't authored any courses yet. Get started by creating your first technical curriculum."}
           </p>
+        </div>
+      ) : viewMode === "table" ? (
+        <div className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-semibold">
+                  <th className="py-3 px-4">Course</th>
+                  <th className="py-3 px-3">Format & Level</th>
+                  <th className="py-3 px-3">Status</th>
+                  <th className="py-3 px-3">Pricing</th>
+                  <th className="py-3 px-3">Learners</th>
+                  <th className="py-3 px-3">Rating</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E2E8F0]">
+                {courses.map((course) => {
+                  const isPublishing = actionInProgress === `publish-${course._id}`;
+                  const isUnpublishing = actionInProgress === `unpublish-${course._id}`;
+                  const isDuplicating = actionInProgress === `duplicate-${course._id}`;
+                  const isArchiving = actionInProgress === `archive-${course._id}`;
+
+                  return (
+                    <tr key={course._id} className="hover:bg-slate-50/60 transition-colors">
+                      <td className="py-3 px-4">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={course.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&h=450&fit=crop"}
+                            alt={course.title}
+                            className="w-12 h-8 rounded object-cover border border-[#E2E8F0] shrink-0"
+                          />
+                          <div className="min-w-0 max-w-xs sm:max-w-sm">
+                            <p className="font-bold text-[#111827] truncate" title={course.title}>
+                              {course.title}
+                            </p>
+                            <p className="text-[11px] text-[#64748B] truncate">
+                              {course.category} • {course.totalLessonsCount || 0} lessons • {course.totalDurationMinutes || 0} min
+                            </p>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span className="font-medium text-[#111827]">{course.format || "Mixed"}</span>
+                        <p className="text-[10px] text-[#64748B]">{course.level || "Intermediate"}</p>
+                      </td>
+                      <td className="py-3 px-3">
+                        <span
+                          className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold ${
+                            course.status === "published"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                              : course.status === "pending_review"
+                              ? "bg-amber-50 text-amber-700 border border-amber-200"
+                              : course.status === "archived"
+                              ? "bg-slate-100 text-slate-600 border border-slate-200"
+                              : "bg-blue-50 text-[#2563EB] border border-blue-200"
+                          }`}
+                        >
+                          {course.status.replace("_", " ")}
+                        </span>
+                      </td>
+                      <td className="py-3 px-3 font-semibold text-[#111827]">
+                        {course.isFree ? "Free" : `₹${course.price?.toLocaleString()}`}
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-1 font-semibold text-[#111827]">
+                          <Users className="w-3.5 h-3.5 text-[#64748B]" />
+                          <span>{course.enrolledCount || 0}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3">
+                        <div className="flex items-center gap-1 font-semibold text-[#111827]">
+                          <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
+                          <span>{course.ratingAverage?.toFixed(1) || "5.0"}</span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-4 text-right">
+                        <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                          <Link
+                            href={`/instructor/courses/${course._id}/curriculum`}
+                            className="px-2.5 py-1 rounded bg-blue-50 hover:bg-blue-100 text-[#2563EB] font-semibold text-xs transition-colors"
+                          >
+                            Curriculum
+                          </Link>
+                          <Link
+                            href={`/instructor/courses/${course._id}/edit`}
+                            className="px-2.5 py-1 rounded border border-[#E2E8F0] hover:bg-slate-100 text-[#111827] font-semibold text-xs transition-colors"
+                          >
+                            Settings
+                          </Link>
+
+                          {course.status === "published" ? (
+                            <button
+                              onClick={() => handleUnpublish(course)}
+                              disabled={isUnpublishing}
+                              className="px-2 py-1 rounded border border-amber-200 text-amber-800 bg-amber-50 hover:bg-amber-100 font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer"
+                            >
+                              {isUnpublishing ? "..." : "Unpublish"}
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handlePublishOrSubmit(course)}
+                              disabled={isPublishing}
+                              className="px-2 py-1 rounded border border-emerald-300 text-emerald-800 bg-emerald-50 hover:bg-emerald-100 font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer"
+                            >
+                              {isPublishing ? "..." : "Publish"}
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => handleDuplicate(course)}
+                            disabled={isDuplicating}
+                            title="Duplicate Course"
+                            className="p-1 rounded hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                          >
+                            <Copy className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => handleToggleArchive(course)}
+                            disabled={isArchiving}
+                            title={course.status === "archived" ? "Restore" : "Archive"}
+                            className="p-1 rounded hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                          >
+                            <Archive className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => confirmDelete(course)}
+                            title="Delete Course"
+                            className="p-1 rounded hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">

@@ -463,13 +463,19 @@ function StudentDashboardContent() {
                     </div>
 
                     <div className="p-5 pt-0">
-                      <Link
-                        href={`/courses/${c.slug}`}
-                        className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
-                      >
-                        <span>{enr.progressPercentage >= 100 ? "Review Course" : "Continue Learning"}</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </Link>
+                      {(() => {
+                        const nextLessonId = enr.lastAccessedLessonId || c.modules?.[0]?.lessons?.[0]?._id;
+                        const targetHref = nextLessonId ? `/learn/${c.slug}/${nextLessonId}` : `/courses/${c.slug}`;
+                        return (
+                          <Link
+                            href={targetHref}
+                            className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                          >
+                            <span>{enr.progressPercentage >= 100 ? "Review Course" : "Continue Learning"}</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
+                        );
+                      })()}
                     </div>
                   </div>
                 );

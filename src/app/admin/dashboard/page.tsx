@@ -69,6 +69,7 @@ function AdminDashboardContent() {
   const [usersList, setUsersList] = useState<any[]>([]);
   const [coursesList, setCoursesList] = useState<any[]>([]);
   const [refundsList, setRefundsList] = useState<any[]>([]);
+  const [recentPayments, setRecentPayments] = useState<any[]>([]);
   const [dataLoading, setDataLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 
@@ -97,6 +98,7 @@ function AdminDashboardContent() {
       const data = await res.json();
       if (data.success) {
         setStats(data.metrics);
+        setRecentPayments(data.recentPayments || []);
       } else {
         throw new Error(data.error || "Failed to load admin stats");
       }
@@ -615,6 +617,118 @@ function AdminDashboardContent() {
                 No outstanding refund requests.
               </p>
             )}
+          </div>
+
+          {/* Recent Financial Transactions Table */}
+          <div className="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
+              <div>
+                <h2 className="text-base font-bold text-[#111827]">Recent Platform Financial Transactions</h2>
+                <p className="text-xs text-[#64748B]">Real-time learner enrollment payments, order IDs, and Razorpay gateway statuses.</p>
+              </div>
+              <Link
+                href="/admin/payments"
+                className="text-xs font-semibold text-[#2563EB] hover:text-blue-700"
+              >
+                View All Ledger Entries →
+              </Link>
+            </div>
+
+            {recentPayments.length > 0 ? (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] font-semibold">
+                      <th className="py-2.5 px-3">Learner</th>
+                      <th className="py-2.5 px-3">Course</th>
+                      <th className="py-2.5 px-3">Amount</th>
+                      <th className="py-2.5 px-3">Status</th>
+                      <th className="py-2.5 px-3">Date</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E2E8F0]">
+                    {recentPayments.slice(0, 5).map((p: any) => (
+                      <tr key={p._id} className="hover:bg-slate-50/60 transition-colors">
+                        <td className="py-2.5 px-3">
+                          <p className="font-semibold text-[#111827]">{p.userId?.name || "Learner"}</p>
+                          <p className="text-[11px] text-[#64748B]">{p.userId?.email || "N/A"}</p>
+                        </td>
+                        <td className="py-2.5 px-3 text-[#111827] font-medium max-w-xs truncate">
+                          {p.courseId?.title || "Course Enrollment"}
+                        </td>
+                        <td className="py-2.5 px-3 font-bold text-[#0D9488]">
+                          ₹{(p.amount || 0).toLocaleString()}
+                        </td>
+                        <td className="py-2.5 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
+                              p.status === "completed"
+                                ? "bg-emerald-50 text-[#16A34A] border border-emerald-200"
+                                : p.status === "failed"
+                                ? "bg-rose-50 text-[#DC2626] border border-rose-200"
+                                : "bg-amber-50 text-[#D97706] border border-amber-200"
+                            }`}
+                          >
+                            {p.status}
+                          </span>
+                        </td>
+                        <td className="py-2.5 px-3 text-[#64748B]">
+                          {p.createdAt ? new Date(p.createdAt).toLocaleDateString() : "Recent"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-xs text-[#64748B] py-6 text-center">
+                No recent transactions recorded.
+              </p>
+            )}
+          </div>
+
+          {/* Quick Operations Strip */}
+          <div className="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <Link
+              href="/admin/users"
+              className="p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] transition-all shadow-xs text-xs space-y-1 block"
+            >
+              <div className="flex items-center gap-2 font-bold text-[#111827]">
+                <Users className="w-4 h-4 text-[#2563EB]" />
+                <span>User Management</span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">Audit accounts, roles, and security</p>
+            </Link>
+            <Link
+              href="/admin/instructors/limits"
+              className="p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] transition-all shadow-xs text-xs space-y-1 block"
+            >
+              <div className="flex items-center gap-2 font-bold text-[#111827]">
+                <ShieldAlert className="w-4 h-4 text-[#D97706]" />
+                <span>Author Quotas</span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">Course caps, pricing limits & approvals</p>
+            </Link>
+            <Link
+              href="/admin/seo"
+              className="p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] transition-all shadow-xs text-xs space-y-1 block"
+            >
+              <div className="flex items-center gap-2 font-bold text-[#111827]">
+                <Search className="w-4 h-4 text-[#16A34A]" />
+                <span>SEO Controls</span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">Canonicals, sitemaps & crawl metadata</p>
+            </Link>
+            <Link
+              href="/admin/marketing/popups"
+              className="p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#CBD5E1] transition-all shadow-xs text-xs space-y-1 block"
+            >
+              <div className="flex items-center gap-2 font-bold text-[#111827]">
+                <Sparkles className="w-4 h-4 text-[#06B6D4]" />
+                <span>Offers & Popups</span>
+              </div>
+              <p className="text-[11px] text-[#64748B]">Targeted modals & flash sales</p>
+            </Link>
           </div>
         </div>
       )}
