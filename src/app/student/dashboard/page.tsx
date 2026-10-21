@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 
 function StudentDashboardContent() {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, logout, refreshUser } = useAuth();
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -55,14 +55,31 @@ function StudentDashboardContent() {
   const [savingProfile, setSavingProfile] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login?redirect=/student/dashboard");
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login?redirect=/student/dashboard");
+      } else if (user.role === "instructor") {
+        router.replace("/instructor/dashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.replace("/admin/dashboard");
+      }
     }
   }, [user, authLoading, router]);
 
   const fetchDashboard = async () => {
     try {
-      const res = await fetch("/api/dashboard/student");
+      const res = await fetch("/api/dashboard/student", {
+        cache: "no-store",
+        credentials: "same-origin",
+      });
+      if (res.status === 403) {
+        if (user?.role === "instructor") {
+          router.replace("/instructor/dashboard");
+        } else if (user?.role === "admin" || user?.role === "super_admin") {
+          router.replace("/admin/dashboard");
+        }
+        return;
+      }
       const data = await res.json();
       if (data.success) {
         setDashboardData(data);
@@ -80,7 +97,7 @@ function StudentDashboardContent() {
   };
 
   useEffect(() => {
-    if (!authLoading && user) {
+    if (!authLoading && user && user.role === "student") {
       fetchDashboard();
     }
   }, [authLoading, user]);
@@ -89,7 +106,22 @@ function StudentDashboardContent() {
     e.preventDefault();
     setSavingProfile(true);
     try {
-      toast.success("Profile updated successfully!");
+      const res = await fetch("/api/dashboard/student", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: profileName,
+          headline: profileHeadline,
+          bio: profileBio,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Profile updated successfully!");
+        await refreshUser();
+      } else {
+        toast.error(data.error || "Failed to update profile");
+      }
     } catch {
       toast.error("Failed to update profile");
     } finally {

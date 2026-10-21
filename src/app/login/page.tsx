@@ -22,17 +22,28 @@ function LoginContent() {
 
   const safeRedirectUrl = redirectUrl && redirectUrl.startsWith("/") && !redirectUrl.startsWith("//") ? redirectUrl : "";
 
+  // Helper to validate that a redirect target aligns with the user's role authority
+  const isAllowedRoleRedirect = (target: string, role: string) => {
+    if (!target) return false;
+    if (target.startsWith("/student") && role !== "student") return false;
+    if (target.startsWith("/instructor") && role !== "instructor" && role !== "admin" && role !== "super_admin") return false;
+    if (target.startsWith("/admin") && role !== "admin" && role !== "super_admin") return false;
+    return true;
+  };
+
+  const getCanonicalDashboard = (role: string) => {
+    if (role === "admin" || role === "super_admin") return "/admin/dashboard";
+    if (role === "instructor") return "/instructor/dashboard";
+    return "/student/dashboard";
+  };
+
   // If already logged in, redirect automatically to the appropriate role dashboard
   useEffect(() => {
     if (user) {
-      if (safeRedirectUrl) {
+      if (safeRedirectUrl && isAllowedRoleRedirect(safeRedirectUrl, user.role)) {
         router.push(safeRedirectUrl);
-      } else if (user.role === "admin" || user.role === "super_admin") {
-        router.push("/admin/dashboard");
-      } else if (user.role === "instructor") {
-        router.push("/instructor/dashboard");
       } else {
-        router.push("/student/dashboard");
+        router.push(getCanonicalDashboard(user.role));
       }
     }
   }, [user, safeRedirectUrl, router]);
@@ -53,14 +64,10 @@ function LoginContent() {
         login(data.user);
         toast.success(`Welcome back, ${data.user.name}!`);
 
-        if (safeRedirectUrl) {
+        if (safeRedirectUrl && isAllowedRoleRedirect(safeRedirectUrl, data.user.role)) {
           router.push(safeRedirectUrl);
-        } else if (data.user.role === "admin" || data.user.role === "super_admin") {
-          router.push("/admin/dashboard");
-        } else if (data.user.role === "instructor") {
-          router.push("/instructor/dashboard");
         } else {
-          router.push("/student/dashboard");
+          router.push(getCanonicalDashboard(data.user.role));
         }
       } else {
         toast.error(data.error || "Login failed. Check your email and password.");

@@ -41,9 +41,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const revision = authRevision.current;
     try {
-      const res = await fetch("/api/auth/me", {
+      const res = await fetch(`/api/auth/me?_t=${Date.now()}`, {
         credentials: "same-origin",
         cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
       });
       if (revision !== authRevision.current || logoutInProgress.current) return;
 

@@ -9,7 +9,7 @@ import { User, Shield, Bell, CheckCircle2, Loader2 } from "lucide-react";
 import RichTextEditor from "@/components/ui/RichTextEditor";
 
 export default function StudentSettingsPage() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, refreshUser } = useAuth();
   const toast = useToast();
   const router = useRouter();
 
@@ -19,12 +19,18 @@ export default function StudentSettingsPage() {
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login?redirect=/student/settings");
-    } else if (user) {
-      setName(user.name || "");
-      setHeadline(user.headline || "");
-      setBio(user.bio || "");
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login?redirect=/student/settings");
+      } else if (user.role === "instructor") {
+        router.replace("/instructor/dashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.replace("/admin/dashboard");
+      } else if (user) {
+        setName(user.name || "");
+        setHeadline(user.headline || "");
+        setBio(user.bio || "");
+      }
     }
   }, [user, authLoading, router]);
 
@@ -32,8 +38,18 @@ export default function StudentSettingsPage() {
     e.preventDefault();
     setSaving(true);
     try {
-      // Update profile
-      toast.success("Profile preferences saved successfully!");
+      const res = await fetch("/api/dashboard/student", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, headline, bio }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Profile preferences saved successfully!");
+        await refreshUser();
+      } else {
+        toast.error(data.error || "Failed to update preferences");
+      }
     } catch {
       toast.error("Failed to update preferences");
     } finally {

@@ -11,7 +11,9 @@ interface PublicNavShellProps {
 }
 
 export default function PublicNavShell({ children }: PublicNavShellProps) {
-  const pathname = usePathname() || "";
+  const routerPathname = usePathname();
+  const windowPathname = typeof window !== "undefined" ? window.location.pathname : "";
+  const pathname = routerPathname || windowPathname || "";
 
   // Dedicated Auth routes: must NEVER render public header or footer
   const isAuthRoute =

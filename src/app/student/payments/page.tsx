@@ -31,8 +31,14 @@ export default function StudentPaymentsPage() {
   const [submittingRefund, setSubmittingRefund] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login?redirect=/student/payments");
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login?redirect=/student/payments");
+      } else if (user.role === "instructor") {
+        router.replace("/instructor/dashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.replace("/admin/dashboard");
+      }
     }
   }, [user, authLoading, router]);
 

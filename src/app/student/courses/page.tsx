@@ -15,8 +15,14 @@ export default function StudentCoursesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/login?redirect=/student/courses");
+    if (!authLoading) {
+      if (!user) {
+        router.push("/login?redirect=/student/courses");
+      } else if (user.role === "instructor") {
+        router.replace("/instructor/dashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.replace("/admin/dashboard");
+      }
     }
   }, [user, authLoading, router]);
 

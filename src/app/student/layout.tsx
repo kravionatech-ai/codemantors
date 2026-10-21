@@ -1,7 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 import DashboardShell, { DashboardNavItem } from "@/components/dashboard/DashboardShell";
 import {
   LayoutDashboard,
@@ -13,9 +15,25 @@ import {
   Settings,
   HelpCircle,
   Search,
+  Loader2,
 } from "lucide-react";
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.replace("/login?redirect=/student/dashboard");
+      } else if (user.role === "instructor") {
+        router.replace("/instructor/dashboard");
+      } else if (user.role === "admin" || user.role === "super_admin") {
+        router.replace("/admin/dashboard");
+      }
+    }
+  }, [user, loading, router]);
+
   const sidebarNavItems: DashboardNavItem[] = [
     { name: "Dashboard", href: "/student/dashboard", icon: LayoutDashboard },
     { name: "My Courses", href: "/student/courses", icon: BookOpen },
@@ -26,6 +44,15 @@ export default function StudentLayout({ children }: { children: React.ReactNode 
     { name: "Profile & Settings", href: "/student/settings", icon: Settings },
     { name: "Help & Support", href: "/help", icon: HelpCircle },
   ];
+
+  if (!loading && user && user.role !== "student") {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F8FAFC] text-[#64748B] space-y-3">
+        <Loader2 className="w-8 h-8 animate-spin text-[#2563EB]" />
+        <p className="text-xs font-semibold">Redirecting to authorized dashboard...</p>
+      </div>
+    );
+  }
 
   return (
     <DashboardShell

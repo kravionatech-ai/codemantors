@@ -29,22 +29,31 @@ export async function GET(req: NextRequest) {
       Enrollment.countDocuments({ userId: user._id, status: { $in: ["active", "completed"] } }),
     ]);
 
-    return NextResponse.json({
-      success: true,
-      user: {
-        id: user._id.toString(),
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar,
-        headline: user.headline,
-        bio: user.bio,
-        website: user.website,
-        socialLinks: user.socialLinks,
-        unreadNotifications,
-        activeEnrollmentsCount,
+    return NextResponse.json(
+      {
+        success: true,
+        user: {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          avatar: user.avatar,
+          headline: user.headline,
+          bio: user.bio,
+          website: user.website,
+          socialLinks: user.socialLinks,
+          unreadNotifications,
+          activeEnrollmentsCount,
+        },
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Get session error:", error);
     return NextResponse.json(

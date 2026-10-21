@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import { Enrollment, Course, Certificate, QuizAttempt, LessonProgress, Payment, Notification } from "@/models";
+import { User, Enrollment, Course, Certificate, QuizAttempt, LessonProgress, Payment, Notification } from "@/models";
 import { getSessionUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +10,14 @@ export async function GET(req: NextRequest) {
     const session = await getSessionUser(req);
     if (!session) {
       return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Role-based Server Authorization: only authentic students can access student dashboard metrics
+    if (session.role !== "student") {
+      return NextResponse.json(
+        { success: false, error: "Access denied. Student account required." },
+        { status: 403 }
+      );
     }
 
     await connectDB();
@@ -105,27 +113,108 @@ export async function GET(req: NextRequest) {
       };
     }
 
-    return NextResponse.json({
-      success: true,
-      stats: {
-        totalEnrolled,
-        inProgressCount,
-        completedCoursesCount,
-        totalCertificates,
-        totalHoursLearned: (totalMinutesLearned / 60).toFixed(1),
+    return NextResponse.json(
+      {
+        success: true,
+        stats: {
+          totalEnrolled,
+          inProgressCount,
+          completedCoursesCount,
+          totalCertificates,
+          totalHoursLearned: (totalMinutesLearned / 60).toFixed(1),
+        },
+        continueLearning,
+        enrollments,
+        payments,
+        certificates,
+        quizAttempts,
+        bookmarkedLessons,
+        notifications,
       },
-      continueLearning,
-      enrollments,
-      payments,
-      certificates,
-      quizAttempts,
-      bookmarkedLessons,
-      notifications,
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("Student dashboard API error:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to load dashboard data" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const session = await getSessionUser(req);
+    if (!session) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    if (session.role !== "student") {
+      return NextResponse.json(
+        { success: false, error: "Access denied. Student account required." },
+        { status: 403 }
+      );
+    }
+
+    await connectDB();
+    const body = await req.json();
+    const { name, headline, bio, avatar, website } = body;
+
+    const user = await User.findById(session.userId);
+    if (!user) {
+      return NextResponse.json({ success: false, error: "Student profile not found" }, { status: 404 });
+    }
+
+    if (typeof name === "string" && name.trim()) {
+      user.name = name.trim();
+    }
+    if (typeof headline === "string") {
+      user.headline = headline.trim();
+    }
+    if (typeof bio === "string") {
+      user.bio = bio.trim();
+    }
+    if (typeof avatar === "string") {
+      user.avatar = avatar.trim();
+    }
+    if (typeof website === "string") {
+      user.website = website.trim();
+    }
+
+    await user.save();
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Profile updated successfully",
+        user: {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          avatar: user.avatar,
+          headline: user.headline,
+          bio: user.bio,
+          website: user.website,
+        },
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+          Pragma: "no-cache",
+        },
+      }
+    );
+  } catch (error: any) {
+    console.error("Update student profile error:", error);
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to update profile" },
       { status: 500 }
     );
   }

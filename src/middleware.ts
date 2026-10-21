@@ -35,9 +35,27 @@ export async function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
   const user = await verifyToken(req);
 
+  // Helper to validate whether a requested redirect path matches the user's role permissions
+  const isAllowedRoleRedirect = (targetPath: string, role: string) => {
+    if (!targetPath || !targetPath.startsWith("/") || targetPath.startsWith("//")) return false;
+    if (targetPath.startsWith("/student") && role !== "student") return false;
+    if (targetPath.startsWith("/instructor") && role !== "instructor" && role !== "admin" && role !== "super_admin") return false;
+    if (targetPath.startsWith("/admin") && role !== "admin" && role !== "super_admin") return false;
+    return true;
+  };
+
+  const getCanonicalDashboard = (role: string) => {
+    if (role === "admin" || role === "super_admin") return "/admin/dashboard";
+    if (role === "instructor") return "/instructor/dashboard";
+    return "/student/dashboard";
+  };
+
   // 1. Canonical Aliases for root dashboard routes
   if (pathname === "/dashboard") {
-    return NextResponse.redirect(new URL("/student/dashboard", req.url));
+    if (user) {
+      return NextResponse.redirect(new URL(getCanonicalDashboard(user.role), req.url));
+    }
+    return NextResponse.redirect(new URL("/login?redirect=/student/dashboard", req.url));
   }
   if (pathname === "/instructor") {
     return NextResponse.redirect(new URL("/instructor/dashboard", req.url));
@@ -50,32 +68,36 @@ export async function middleware(req: NextRequest) {
   if (pathname === "/login" || pathname === "/register") {
     if (user) {
       const redirectParam = req.nextUrl.searchParams.get("redirect");
-      if (redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")) {
+      if (redirectParam && isAllowedRoleRedirect(redirectParam, user.role)) {
         return NextResponse.redirect(new URL(redirectParam, req.url));
       }
-
-      if (user.role === "admin" || user.role === "super_admin") {
-        return NextResponse.redirect(new URL("/admin/dashboard", req.url));
-      }
-      if (user.role === "instructor") {
-        return NextResponse.redirect(new URL("/instructor/dashboard", req.url));
-      }
-      return NextResponse.redirect(new URL("/student/dashboard", req.url));
+      return NextResponse.redirect(new URL(getCanonicalDashboard(user.role), req.url));
     }
     return NextResponse.next();
   }
 
-  // 3. Student Routes Protection
+  // 3. Student Routes Protection - Strictly Gated to Students
   if (pathname.startsWith("/student")) {
     if (!user) {
       const loginUrl = new URL("/login", req.url);
       loginUrl.searchParams.set("redirect", pathname + search);
       return NextResponse.redirect(loginUrl);
     }
+    // Instructors visiting /student routes must be routed to their Instructor Studio
+    if (user.role === "instructor") {
+      return NextResponse.redirect(new URL("/instructor/dashboard", req.url));
+    }
+    // Administrators visiting /student routes must be routed to their Admin Panel
+    if (user.role === "admin" || user.role === "super_admin") {
+      return NextResponse.redirect(new URL("/admin/dashboard", req.url));
+    }
+    if (user.role !== "student") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    }
     return NextResponse.next();
   }
 
-  // 4. Instructor Routes Protection
+  // 4. Instructor Routes Protection - Strictly Gated to Instructors and Admins
   if (pathname.startsWith("/instructor")) {
     if (!user) {
       const loginUrl = new URL("/login", req.url);
@@ -88,7 +110,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 5. Admin Routes Protection
+  // 5. Admin Routes Protection - Strictly Gated to Admins
   if (pathname.startsWith("/admin")) {
     if (!user) {
       const loginUrl = new URL("/login", req.url);

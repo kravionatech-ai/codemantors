@@ -325,14 +325,16 @@ export default function Navbar() {
                         </span>
                       </div>
                       <div className="py-1 space-y-0.5">
-                        <Link
-                          href="/student/dashboard"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-3 py-2 text-xs text-[#0F172A] hover:bg-slate-50 rounded-lg"
-                        >
-                          <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
-                          Student Dashboard
-                        </Link>
+                        {user.role === "student" && (
+                          <Link
+                            href="/student/dashboard"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2 px-3 py-2 text-xs text-[#0F172A] hover:bg-slate-50 rounded-lg"
+                          >
+                            <LayoutDashboard className="w-3.5 h-3.5 text-[#2563EB]" />
+                            Student Dashboard
+                          </Link>
+                        )}
                         {user.role === "instructor" && (
                           <Link
                             href="/instructor/dashboard"
@@ -343,7 +345,7 @@ export default function Navbar() {
                             Instructor Studio
                           </Link>
                         )}
-                        {user.role === "admin" && (
+                        {(user.role === "admin" || user.role === "super_admin") && (
                           <Link
                             href="/admin/dashboard"
                             onClick={() => setUserDropdownOpen(false)}
@@ -452,13 +454,15 @@ export default function Navbar() {
                   <p className="text-xs font-semibold text-[#0F172A]">{user.name}</p>
                   <p className="text-[11px] text-[#64748B]">{user.email}</p>
                 </div>
-                <Link
-                  href="/student/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
-                >
-                  Student Dashboard
-                </Link>
+                {user.role === "student" && (
+                  <Link
+                    href="/student/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-3 py-2 rounded-lg text-sm font-medium text-[#0F172A] hover:bg-slate-50"
+                  >
+                    Student Dashboard
+                  </Link>
+                )}
                 {user.role === "instructor" && (
                   <Link
                     href="/instructor/dashboard"

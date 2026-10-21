@@ -22,7 +22,8 @@
     "test:instructor": "tsx src/scripts/test-instructor-studio.ts",
     "test:rich-text": "tsx src/scripts/test-rich-text-editor.ts",
     "test:accounts": "tsx src/scripts/verify-three-test-accounts.ts",
-    "test": "npm run test:workflows && npm run test:live && npm run test:popups && npm run test:settings-seo && npm run test:routing && npm run test:layouts && npm run test:course-builder && npm run test:seed && npm run test:instructor && npm run test:rich-text && npm run test:accounts"
+    "test:student-identity": "tsx src/scripts/test-student-identity-and-layout.ts",
+    "test": "npm run test:workflows && npm run test:live && npm run test:popups && npm run test:settings-seo && npm run test:routing && npm run test:layouts && npm run test:course-builder && npm run test:seed && npm run test:instructor && npm run test:rich-text && npm run test:accounts && npm run test:student-identity"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
