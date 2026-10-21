@@ -98,12 +98,11 @@ export default function Navbar() {
         .sort((a: any, b: any) => (a.order || 0) - (b.order || 0))
         .map((l: any) => ({ name: l.label, href: l.href }))
     : [
-        { name: "Explore Courses", href: "/courses" },
+        { name: "Courses", href: "/courses" },
         { name: "Learning Paths", href: "/learning-paths" },
+        { name: "Mentors", href: "/#mentors" },
         { name: "Blog", href: "/blog" },
-        { name: "Verify Certificate", href: "/certificates/verify" },
         { name: "About", href: "/about" },
-        { name: "FAQ", href: "/faq" },
       ];
 
   return (
@@ -138,17 +137,12 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-lg bg-[#172554] flex items-center justify-center shadow-xs transition-colors group-hover:bg-[#1E3A8A]">
-              <Code2 className="w-5 h-5 text-[#06B6D4]" />
+            <div className="w-8 h-8 rounded-lg bg-[#14264F] flex items-center justify-center shadow-xs transition-colors group-hover:bg-[#1E3A8A]">
+              <Code2 className="w-4.5 h-4.5 text-[#06B6D4]" />
             </div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-bold tracking-tight text-[#172554]">
-                CodeMentors
-              </span>
-              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200">
-                LMS
-              </span>
-            </div>
+            <span className="text-xl font-bold tracking-tight text-[#14213D]">
+              CodeMentors
+            </span>
           </Link>
 
           {/* Desktop Navigation Links */}
@@ -176,13 +170,10 @@ export default function Navbar() {
             {/* Quick Search */}
             <Link
               href="/courses"
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:text-[#0F172A] hover:border-slate-300 text-xs transition-colors"
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-[#64748B] hover:text-[#14213D] hover:border-slate-300 text-xs transition-colors"
             >
-              <Search className="w-3.5 h-3.5 text-[#64748B]" />
-              <span>Search courses...</span>
-              <kbd className="hidden lg:inline px-1.5 py-0.5 text-[10px] bg-white text-[#64748B] rounded border border-[#E2E8F0]">
-                /
-              </kbd>
+              <Search className="w-3.5 h-3.5 text-[#94A3B8]" />
+              <span>Search courses, mentors...</span>
             </Link>
 
             {/* Course Basket Button */}
@@ -391,16 +382,16 @@ export default function Navbar() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="px-3.5 py-1.5 text-xs font-semibold text-[#0F172A] hover:text-[#2563EB] rounded-lg border border-[#E2E8F0] hover:bg-slate-50 transition-colors"
+                  className="px-3 py-1.5 text-sm font-semibold text-[#14213D] hover:text-[#2563EB] transition-colors"
                 >
-                  Log In
+                  Login
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#172554] hover:bg-[#1E3A8A] rounded-lg shadow-xs transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-white bg-[#2563EB] hover:bg-blue-700 rounded-lg shadow-xs transition-colors"
                 >
                   Start Learning
                 </Link>

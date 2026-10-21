@@ -28,9 +28,11 @@ export interface CourseCardProps {
     discountPrice?: number;
     isFree: boolean;
     certificateEnabled?: boolean;
+    badge?: string;
     instructor?: {
       name: string;
       avatar?: string;
+      headline?: string;
     };
   };
   progress?: number; // 0 to 100 if user is enrolled
@@ -79,7 +81,20 @@ export default function CourseCard({ course, progress, isEnrolled, continueLesso
           className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
           loading="lazy"
         />
-        <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5">
+        <div className="absolute top-2.5 left-2.5 flex flex-wrap gap-1.5 z-10">
+          {course.badge && (
+            <span
+              className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase shadow-2xs ${
+                course.badge.toLowerCase().includes("best")
+                  ? "bg-amber-400 text-[#14213D]"
+                  : course.badge.toLowerCase().includes("hot")
+                  ? "bg-rose-500 text-white"
+                  : "bg-teal-600 text-white"
+              }`}
+            >
+              {course.badge}
+            </span>
+          )}
           <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-white/95 text-[#2563EB] border border-[#E2E8F0] shadow-2xs">
             {course.category}
           </span>
