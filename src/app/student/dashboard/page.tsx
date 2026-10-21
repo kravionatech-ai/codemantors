@@ -204,174 +204,161 @@ function StudentDashboardContent() {
     : (enrollments || []);
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Welcome Banner */}
-      <div className="bg-[#172554] rounded-2xl p-6 sm:p-8 text-white shadow-xs relative overflow-hidden">
-        <div className="relative z-10 max-w-2xl space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-[#06B6D4] text-xs font-semibold border border-blue-400/20">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Welcome back to CodeMentors</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Hi, {user?.name || "Student"}!
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* 1. Compact Human-Centric Greeting & Live Progress Summary */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827]">
+            Hi, {user?.name || "Student"}
           </h1>
-          <p className="text-sm text-[#94A3B8] leading-relaxed">
-            Pick up right where you left off. Track your lessons, practice real-world challenges, and advance your engineering career.
+          <p className="text-xs text-[#64748B] mt-0.5">
+            {inProgressEnrollments.length > 0
+              ? `${inProgressEnrollments.length} ${inProgressEnrollments.length === 1 ? "course" : "courses"} currently in progress`
+              : "Track your enrolled curriculums, assessments, and verified credentials."}
           </p>
+        </div>
+
+        {/* Learning Metrics Strip */}
+        <div className="flex items-center gap-3 sm:gap-4 text-xs text-[#64748B] shrink-0 flex-wrap">
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-[#111827]">{enrollments?.length || 0}</span>
+            <span>Enrolled</span>
+          </div>
+          <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-[#2563EB]">{inProgressEnrollments.length}</span>
+            <span>In Progress</span>
+          </div>
+          <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-[#0D9488]">{completedEnrollments.length}</span>
+            <span>Completed</span>
+          </div>
+          <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-[#111827]">{certificates?.length || 0}</span>
+            <span>Certificates</span>
+          </div>
         </div>
       </div>
 
-      {/* Prominent Recently Accessed Lesson Direct Resume Card */}
-      {mostRecentResume && mostRecentResume.courseSlug && mostRecentResume.lastLessonId && (
-        <div className="bg-gradient-to-r from-[#172554] via-[#1E3A8A] to-[#172554] rounded-2xl p-6 text-white border border-blue-800 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      {/* 2. Primary Next Action: Continue Learning Resume Card */}
+      {mostRecentResume && mostRecentResume.courseSlug && mostRecentResume.lastLessonId ? (
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-5 hover:border-[#CBD5E1] transition-colors">
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-cyan-400/20 text-[#06B6D4] border border-cyan-400/30 flex items-center gap-1.5">
-                <Play className="w-3 h-3 fill-current" /> Recently Accessed Lesson
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                Continue Learning
               </span>
-              <span className="text-xs text-slate-300">
-                {mostRecentResume.progressPercentage}% Completed
+              <span className="text-xs text-[#64748B]">
+                Course: <span className="font-medium text-[#111827]">{mostRecentResume.courseTitle}</span>
               </span>
             </div>
-            <h2 className="text-xl font-bold tracking-tight text-white">
-              {mostRecentResume.lastLessonTitle || "Continue Your Learning"}
+            <h2 className="text-base sm:text-lg font-bold text-[#111827]">
+              {mostRecentResume.lastLessonTitle || "Resume Next Lesson"}
             </h2>
-            <p className="text-xs text-slate-300">
-              Course: <span className="font-semibold text-white">{mostRecentResume.courseTitle}</span>
-            </p>
-            {/* Progress line */}
-            <div className="w-full bg-blue-950/80 rounded-full h-2 max-w-md mt-2">
-              <div
-                className="bg-[#06B6D4] h-2 rounded-full transition-all"
-                style={{ width: `${mostRecentResume.progressPercentage}%` }}
-              />
+            <div className="flex items-center gap-3 pt-1">
+              <div className="w-48 bg-[#E2E8F0] rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="bg-[#2563EB] h-1.5 rounded-full transition-all"
+                  style={{ width: `${mostRecentResume.progressPercentage}%` }}
+                />
+              </div>
+              <span className="text-xs font-semibold text-[#64748B]">
+                {mostRecentResume.progressPercentage}% completed
+              </span>
             </div>
           </div>
           <Link
             href={`/learn/${mostRecentResume.courseSlug}/${mostRecentResume.lastLessonId}`}
-            className="px-6 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-600 text-white text-sm font-bold shadow-lg transition-all flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors whitespace-nowrap cursor-pointer shrink-0"
           >
-            <Play className="w-4 h-4 fill-current" />
+            <Play className="w-3.5 h-3.5 fill-current" />
             <span>Resume Lesson</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
+      ) : (
+        /* Empty State when student has no courses yet */
+        enrollments?.length === 0 && (
+          <div className="bg-white border border-[#E2E8F0] rounded-xl p-8 text-center space-y-3">
+            <BookOpen className="w-8 h-8 text-[#94A3B8] mx-auto" />
+            <h3 className="text-sm font-bold text-[#111827]">Start Your First Course</h3>
+            <p className="text-xs text-[#64748B] max-w-md mx-auto">
+              Explore our curated library of engineering masterclasses in modern web development, backend systems, and cloud architecture.
+            </p>
+            <div className="pt-1">
+              <Link
+                href="/courses"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
+              >
+                <span>Browse Courses</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+        )
       )}
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Enrolled Courses</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center">
-              <BookOpen className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
-            {stats?.enrolledCourses || (enrollments?.length || 0)}
-          </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">Active curriculum</span>
-        </div>
-
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">In Progress</span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-[#D97706] flex items-center justify-center">
-              <Clock className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
-            {inProgressEnrollments.length}
-          </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">Ongoing courses</span>
-        </div>
-
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Completed</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#16A34A] flex items-center justify-center">
-              <CheckCircle2 className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
-            {completedEnrollments.length}
-          </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">100% finished</span>
-        </div>
-
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Certificates</span>
-            <div className="w-8 h-8 rounded-lg bg-cyan-50 text-[#06B6D4] flex items-center justify-center">
-              <Award className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
-            {stats?.certificatesEarned || (certificates?.length || 0)}
-          </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">Verified credentials</span>
-        </div>
-      </div>
-
-      {/* Navigation Tabs */}
+      {/* 3. Navigation Tabs */}
       <div className="border-b border-[#E2E8F0] flex items-center gap-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab("courses")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "courses"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           My Courses ({enrollments?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("announcements")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
             activeTab === "announcements"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           <Bell className="w-3.5 h-3.5 text-[#2563EB]" />
-          Announcements & Updates
+          Announcements
         </button>
         <button
           onClick={() => setActiveTab("bookmarks")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "bookmarks"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Bookmarks ({bookmarkedLessons?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("quizzes")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "quizzes"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Quizzes & Results ({quizAttempts?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("certificates")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "certificates"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Certificates ({certificates?.length || 0})
         </button>
         <button
           onClick={() => setActiveTab("settings")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-3 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "settings"
               ? "border-[#2563EB] text-[#2563EB]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Profile Settings
@@ -385,30 +372,30 @@ function StudentDashboardContent() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setCourseFilter("all")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 courseFilter === "all"
-                  ? "bg-[#172554] text-white shadow-xs"
-                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]"
+                  ? "bg-[#2563EB] text-white shadow-xs"
+                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#111827]"
               }`}
             >
               All Courses ({enrollments?.length || 0})
             </button>
             <button
               onClick={() => setCourseFilter("in_progress")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 courseFilter === "in_progress"
-                  ? "bg-[#172554] text-white shadow-xs"
-                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]"
+                  ? "bg-[#2563EB] text-white shadow-xs"
+                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#111827]"
               }`}
             >
               In Progress ({inProgressEnrollments.length})
             </button>
             <button
               onClick={() => setCourseFilter("completed")}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
                 courseFilter === "completed"
-                  ? "bg-[#172554] text-white shadow-xs"
-                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#0F172A]"
+                  ? "bg-[#2563EB] text-white shadow-xs"
+                  : "bg-white border border-[#E2E8F0] text-[#64748B] hover:text-[#111827]"
               }`}
             >
               Completed ({completedEnrollments.length})
@@ -423,7 +410,7 @@ function StudentDashboardContent() {
                 return (
                   <div
                     key={enr._id}
-                    className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs flex flex-col justify-between hover:shadow-sm transition-shadow"
+                    className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all"
                   >
                     <div>
                       <div className="h-40 bg-slate-100 relative overflow-hidden">
@@ -432,7 +419,7 @@ function StudentDashboardContent() {
                           alt={c.title}
                           className="w-full h-full object-cover"
                         />
-                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white/95 text-[#172554] shadow-xs">
+                        <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white/95 text-[#111827] shadow-2xs border border-[#E2E8F0]">
                           {enr.status}
                         </span>
                       </div>
@@ -440,7 +427,7 @@ function StudentDashboardContent() {
                         <span className="text-[10px] font-bold uppercase tracking-wider text-[#2563EB] bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                           {c.level || "Intermediate"}
                         </span>
-                        <h3 className="text-base font-bold text-[#0F172A] line-clamp-1">
+                        <h3 className="text-base font-bold text-[#111827] line-clamp-1">
                           {c.title}
                         </h3>
                         <p className="text-xs text-[#64748B] line-clamp-2">
@@ -450,7 +437,7 @@ function StudentDashboardContent() {
                         <div className="space-y-1 pt-1">
                           <div className="flex justify-between text-xs text-[#64748B]">
                             <span>Progress</span>
-                            <span className="font-semibold text-[#0F172A]">{enr.progressPercentage || 0}%</span>
+                            <span className="font-semibold text-[#111827]">{enr.progressPercentage || 0}%</span>
                           </div>
                           <div className="w-full bg-[#E2E8F0] rounded-full h-1.5">
                             <div
@@ -465,9 +452,9 @@ function StudentDashboardContent() {
                     <div className="p-5 pt-0">
                       <Link
                         href={`/courses/${c.slug}`}
-                        className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white text-xs font-semibold shadow-xs transition-colors"
+                        className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
                       >
-                        <span>Open Course</span>
+                        <span>{enr.progressPercentage >= 100 ? "Review Course" : "Continue Learning"}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
@@ -478,7 +465,7 @@ function StudentDashboardContent() {
           ) : (
             <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center space-y-3">
               <BookOpen className="w-10 h-10 text-[#94A3B8] mx-auto" />
-              <h3 className="text-base font-bold text-[#0F172A]">
+              <h3 className="text-base font-bold text-[#111827]">
                 {courseFilter === "completed" 
                   ? "No Completed Courses Yet" 
                   : courseFilter === "in_progress" 
@@ -493,7 +480,7 @@ function StudentDashboardContent() {
               <div className="pt-2">
                 <Link
                   href="/courses"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white text-xs font-semibold"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold"
                 >
                   <span>Explore Courses</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -664,14 +651,14 @@ function StudentDashboardContent() {
                   <div className="pt-2 flex items-center gap-3">
                     <Link
                       href={`/certificates/${cert.certificateCode}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white text-xs font-semibold shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
                     >
                       <Award className="w-3.5 h-3.5" />
                       View Certificate
                     </Link>
                     <Link
                       href={`/certificates/verify?code=${cert.certificateCode}`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E2E8F0] hover:bg-slate-50 text-[#0F172A] text-xs font-medium"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#E2E8F0] hover:bg-slate-50 text-[#111827] text-xs font-medium transition-colors"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       Verify Public Link
@@ -683,7 +670,7 @@ function StudentDashboardContent() {
           ) : (
             <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center text-[#64748B]">
               <Award className="w-10 h-10 text-[#94A3B8] mx-auto mb-2" />
-              <p className="text-sm font-bold text-[#0F172A]">No Certificates Earned Yet</p>
+              <p className="text-sm font-bold text-[#111827]">No Certificates Earned Yet</p>
               <p className="text-xs text-[#64748B] mt-1">
                 Complete all required lessons and quizzes in eligible courses to earn your official certificates.
               </p>
@@ -695,26 +682,26 @@ function StudentDashboardContent() {
       {/* Tab 5: Profile Settings */}
       {activeTab === "settings" && (
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 sm:p-8 max-w-2xl shadow-xs">
-          <h2 className="text-base font-bold text-[#0F172A] mb-1">Student Profile & Settings</h2>
+          <h2 className="text-base font-bold text-[#111827] mb-1">Student Profile & Settings</h2>
           <p className="text-xs text-[#64748B] mb-6">
             Manage your personal learning information and public credentials.
           </p>
 
           <form onSubmit={handleUpdateProfile} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
+              <label className="block text-xs font-semibold text-[#111827] mb-1.5">
                 Full Name
               </label>
               <input
                 type="text"
                 value={profileName}
                 onChange={(e) => setProfileName(e.target.value)}
-                className="w-full px-3 py-2 text-sm rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:border-[#2563EB]"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-[#E2E8F0] bg-white text-[#111827] focus:outline-none focus:border-[#2563EB]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
+              <label className="block text-xs font-semibold text-[#111827] mb-1.5">
                 Email Address
               </label>
               <input
@@ -729,7 +716,7 @@ function StudentDashboardContent() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
+              <label className="block text-xs font-semibold text-[#111827] mb-1.5">
                 Headline / Title
               </label>
               <input
@@ -737,12 +724,12 @@ function StudentDashboardContent() {
                 value={profileHeadline}
                 onChange={(e) => setProfileHeadline(e.target.value)}
                 placeholder="Full Stack Developer | Aspiring Software Engineer"
-                className="w-full px-3 py-2 text-sm rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] focus:outline-none focus:border-[#2563EB]"
+                className="w-full px-3 py-2 text-sm rounded-lg border border-[#E2E8F0] bg-white text-[#111827] focus:outline-none focus:border-[#2563EB]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#0F172A] mb-1.5">
+              <label className="block text-xs font-semibold text-[#111827] mb-1.5">
                 Bio
               </label>
               <RichTextEditor
@@ -757,7 +744,7 @@ function StudentDashboardContent() {
               <button
                 type="submit"
                 disabled={savingProfile}
-                className="px-4 py-2 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer"
+                className="px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs disabled:opacity-60 cursor-pointer transition-colors"
               >
                 {savingProfile ? "Saving..." : "Save Profile"}
               </button>

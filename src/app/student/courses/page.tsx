@@ -80,14 +80,14 @@ export default function StudentCoursesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
         <div>
-          <h1 className="text-2xl font-black text-[#172554] tracking-tight">My Enrolled Courses</h1>
-          <p className="text-sm text-[#64748B] mt-1">
+          <h1 className="text-xl font-bold text-[#111827] tracking-tight">My Enrolled Courses</h1>
+          <p className="text-xs text-[#64748B] mt-1">
             Access your courses, track lesson progress, and continue learning.
           </p>
         </div>
         <Link
           href="/courses"
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors self-start sm:self-auto"
         >
           Explore More Courses
           <ArrowRight className="w-3.5 h-3.5" />
@@ -97,13 +97,13 @@ export default function StudentCoursesPage() {
       {enrollments.length === 0 ? (
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center shadow-xs">
           <BookOpen className="w-12 h-12 text-[#94A3B8] mx-auto mb-4" />
-          <h3 className="text-base font-bold text-[#172554]">No Enrolled Courses Yet</h3>
+          <h3 className="text-sm font-bold text-[#111827]">No Enrolled Courses Yet</h3>
           <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1 mb-6">
             You haven't enrolled in any courses yet. Browse our curated catalog of software engineering and web development courses.
           </p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#172554] hover:bg-slate-800 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
           >
             Browse Course Catalog
             <ArrowRight className="w-4 h-4" />
@@ -129,14 +129,14 @@ export default function StudentCoursesPage() {
                     alt={course.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#172554]/90 backdrop-blur-xs text-[10px] font-bold text-white">
+                  <div className="absolute top-2 left-2 px-2 py-0.5 rounded bg-[#111827]/80 backdrop-blur-xs text-[10px] font-bold text-white">
                     {course.category}
                   </div>
                 </div>
 
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="font-bold text-[#0F172A] text-sm line-clamp-2 leading-snug">
+                    <h3 className="font-bold text-[#111827] text-sm line-clamp-2 leading-snug">
                       {course.title}
                     </h3>
                     <p className="text-xs text-[#64748B] line-clamp-1 mt-1">
@@ -147,7 +147,7 @@ export default function StudentCoursesPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-[#64748B]">Progress</span>
-                      <span className="font-bold text-[#172554]">
+                      <span className="font-bold text-[#111827]">
                         {enr.progressPercentage || 0}%
                       </span>
                     </div>
@@ -164,14 +164,14 @@ export default function StudentCoursesPage() {
                   <div className="pt-2 border-t border-[#E2E8F0] flex items-center justify-between gap-2">
                     <Link
                       href={`/courses/${course.slug}`}
-                      className="text-xs font-semibold text-[#64748B] hover:text-[#172554]"
+                      className="text-xs font-semibold text-[#64748B] hover:text-[#111827]"
                     >
                       Syllabus
                     </Link>
                     {firstLessonId ? (
                       <Link
                         href={`/learn/${course.slug}/${firstLessonId}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-medium shadow-xs transition-colors"
                       >
                         <Play className="w-3.5 h-3.5 fill-current" />
                         Continue
@@ -179,7 +179,7 @@ export default function StudentCoursesPage() {
                     ) : (
                       <Link
                         href={`/courses/${course.slug}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#172554] text-white text-xs font-semibold"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#2563EB] text-white text-xs font-medium"
                       >
                         Start Learning
                       </Link>

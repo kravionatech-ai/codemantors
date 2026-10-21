@@ -214,41 +214,51 @@ export default function CourseDetailsClient({
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      {/* 1. Header Banner */}
-      <section className="bg-[#172554] text-white py-12 lg:py-16">
+      {/* 1. Header Section (Clean, Developer-First Decision Order) */}
+      <section className="bg-white border-b border-[#E2E8F0] py-8 lg:py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             {/* Left Header Info */}
             <div className="lg:col-span-8 space-y-4">
+              {/* Breadcrumb Navigation */}
+              <div className="flex items-center gap-2 text-xs text-[#64748B]">
+                <Link href="/courses" className="hover:text-[#111827] transition-colors">
+                  Courses
+                </Link>
+                <span>/</span>
+                <span className="text-[#2563EB] font-medium">{course.category}</span>
+              </div>
+
+              {/* Badges */}
               <div className="flex flex-wrap items-center gap-2">
-                <span className="px-2.5 py-1 rounded text-xs font-semibold bg-blue-500/20 text-[#06B6D4] border border-blue-400/20">
+                <span className="px-2.5 py-0.5 rounded text-xs font-semibold bg-blue-50 text-[#2563EB] border border-blue-200">
                   {course.category}
                 </span>
-                <span className="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-white/90">
+                <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-[#111827] border border-[#E2E8F0]">
                   {course.level}
                 </span>
-                <span className="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-white/90">
-                  {course.language}
+                <span className="px-2.5 py-0.5 rounded text-xs font-medium bg-slate-100 text-[#64748B] border border-[#E2E8F0]">
+                  {course.language || "English"}
                 </span>
               </div>
 
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#111827] tracking-tight leading-tight">
                 {course.title}
               </h1>
 
               {course.subtitle && (
-                <p className="text-base sm:text-lg text-[#94A3B8] leading-relaxed max-w-3xl">
+                <p className="text-sm sm:text-base text-[#64748B] leading-relaxed max-w-3xl">
                   {course.subtitle}
                 </p>
               )}
 
               {/* Rating & Stats row */}
-              <div className="flex flex-wrap items-center gap-4 text-xs sm:text-sm text-[#94A3B8] pt-2">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs text-[#64748B] pt-1 border-t border-[#E2E8F0]/60">
                 {course.ratingCount && course.ratingCount > 0 ? (
                   <div className="flex items-center gap-1.5 text-[#D97706] font-bold">
-                    <Star className="w-4 h-4 fill-current" />
+                    <Star className="w-3.5 h-3.5 fill-current" />
                     <span>{course.ratingAverage?.toFixed(1) || "5.0"}</span>
-                    <span className="text-[#94A3B8] font-normal">
+                    <span className="text-[#64748B] font-normal">
                       ({course.ratingCount} {course.ratingCount === 1 ? "review" : "reviews"})
                     </span>
                   </div>
@@ -262,30 +272,30 @@ export default function CourseDetailsClient({
               </div>
 
               {/* Instructor info preview */}
-              <div className="flex items-center gap-3 pt-3">
+              <div className="flex items-center gap-3 pt-2">
                 {course.instructor?.avatar ? (
                   <img
                     src={course.instructor.avatar}
                     alt={course.instructor.name}
-                    className="w-10 h-10 rounded-full object-cover border border-white/20"
+                    className="w-9 h-9 rounded-full object-cover border border-[#E2E8F0]"
                   />
                 ) : (
-                  <div className="w-10 h-10 rounded-full bg-white/10 text-[#06B6D4] flex items-center justify-center font-bold text-sm">
+                  <div className="w-9 h-9 rounded-full bg-blue-50 text-[#2563EB] flex items-center justify-center font-bold text-xs border border-blue-200">
                     {course.instructor?.name?.charAt(0) || "C"}
                   </div>
                 )}
                 <div>
-                  <span className="text-xs text-[#94A3B8] block">Instructor</span>
-                  <span className="text-sm font-semibold text-white">
+                  <span className="text-[11px] text-[#64748B] block">Course Instructor</span>
+                  <span className="text-xs font-semibold text-[#111827]">
                     {course.instructor?.name || "CodeMentors Instructor"}
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Right Card / Enrollment Box */}
+            {/* Right Card / Sticky Enrollment Box */}
             <div className="lg:col-span-4">
-              <div className="rounded-xl border border-[#E2E8F0] bg-white p-6 shadow-xl space-y-6 text-[#0F172A] sticky top-24">
+              <div className="rounded-xl border border-[#E2E8F0] bg-white p-5 shadow-xs space-y-5 text-[#111827] sticky top-20">
                 {/* Preview Thumbnail */}
                 <div className="relative aspect-video w-full rounded-lg overflow-hidden bg-slate-100 group">
                   <img
@@ -296,13 +306,13 @@ export default function CourseDetailsClient({
                   {course.previewVideoUrl && (
                     <button
                       onClick={() => setPreviewVideoUrl(course.previewVideoUrl)}
-                      className="absolute inset-0 m-auto w-12 h-12 rounded-full bg-[#172554]/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all cursor-pointer z-10"
+                      className="absolute inset-0 m-auto w-11 h-11 rounded-full bg-[#111827]/90 text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-all cursor-pointer z-10"
                       title="Watch Preview Lesson"
                     >
-                      <Play className="w-5 h-5 ml-0.5 fill-current" />
+                      <Play className="w-4 h-4 ml-0.5 fill-current" />
                     </button>
                   )}
-                  <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-white/95 text-[#0F172A] shadow-2xs">
+                  <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] font-semibold bg-white/95 text-[#111827] shadow-2xs border border-[#E2E8F0]">
                     Preview Available
                   </span>
                 </div>
@@ -317,24 +327,24 @@ export default function CourseDetailsClient({
                       </div>
                       <Link
                         href={`/learn/${course.slug}/${continueLessonId}`}
-                        className="w-full py-2.5 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
+                        className="w-full py-2.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
                       >
                         Continue Learning
-                        <ArrowRight className="w-4 h-4" />
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </Link>
                     </div>
                   ) : (
                     <div className="space-y-4">
                       <div className="flex items-baseline gap-2">
                         {course.isFree ? (
-                          <span className="text-3xl font-black text-[#16A34A]">Free</span>
+                          <span className="text-2xl font-bold text-[#16A34A]">Free</span>
                         ) : (
                           <>
-                            <span className="text-3xl font-black text-[#0F172A]">
+                            <span className="text-2xl font-bold text-[#111827]">
                               ₹{(course.discountPrice || course.price).toLocaleString("en-IN")}
                             </span>
                             {course.discountPrice && course.discountPrice < course.price && (
-                              <span className="text-sm text-[#94A3B8] line-through">
+                              <span className="text-xs text-[#94A3B8] line-through">
                                 ₹{course.price.toLocaleString("en-IN")}
                               </span>
                             )}
@@ -346,22 +356,22 @@ export default function CourseDetailsClient({
                       {course.isFree ? (
                         <button
                           onClick={handleFreeEnroll}
-                          className="w-full py-3 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white font-bold text-sm shadow-xs transition-colors cursor-pointer"
+                          className="w-full py-2.5 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
                         >
                           Enroll for Free
                         </button>
                       ) : (
-                        <div className="space-y-2.5">
+                        <div className="space-y-2">
                           {/* Buy Now Button */}
                           <button
                             onClick={handleBuyNow}
                             disabled={buyingNow || addingToCart}
-                            className="w-full py-3 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-bold text-sm shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
+                            className="w-full py-2.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition-colors cursor-pointer flex items-center justify-center gap-2"
                           >
                             {buyingNow ? (
-                              <Loader2 className="w-4 h-4 animate-spin text-white" />
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
                             ) : (
-                              <CreditCard className="w-4 h-4 text-[#06B6D4]" />
+                              <CreditCard className="w-3.5 h-3.5 text-blue-200" />
                             )}
                             Buy Now
                           </button>
@@ -370,21 +380,21 @@ export default function CourseDetailsClient({
                           {isInCart(course._id) ? (
                             <Link
                               href="/course-basket"
-                              className="w-full py-2.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#16A34A] border border-emerald-300 font-semibold text-xs flex items-center justify-center gap-2 transition-colors"
+                              className="w-full py-2 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-[#16A34A] border border-emerald-300 font-semibold text-xs flex items-center justify-center gap-2 transition-colors"
                             >
-                              <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#16A34A]" />
                               Item in Basket — View Basket
                             </Link>
                           ) : (
                             <button
                               onClick={handleAddToCart}
                               disabled={addingToCart || buyingNow}
-                              className="w-full py-2.5 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#0F172A] border border-[#CBD5E1] font-semibold text-xs flex items-center justify-center gap-2 shadow-2xs transition-colors cursor-pointer"
+                              className="w-full py-2 rounded-lg bg-[#F8FAFC] hover:bg-[#F1F5F9] text-[#111827] border border-[#CBD5E1] font-semibold text-xs flex items-center justify-center gap-2 shadow-2xs transition-colors cursor-pointer"
                             >
                               {addingToCart ? (
-                                <Loader2 className="w-4 h-4 animate-spin text-[#2563EB]" />
+                                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#2563EB]" />
                               ) : (
-                                <ShoppingBag className="w-4 h-4 text-[#2563EB]" />
+                                <ShoppingBag className="w-3.5 h-3.5 text-[#2563EB]" />
                               )}
                               Add to Basket
                             </button>
@@ -430,13 +440,13 @@ export default function CourseDetailsClient({
       </section>
 
       {/* 2. Main Details Content */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-[#0F172A]">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          <div className="lg:col-span-8 space-y-12">
+      <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-[#111827]">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          <div className="lg:col-span-8 space-y-10">
             {/* Learning Objectives */}
             {course.whatYouWillLearn?.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-xl border border-[#E2E8F0] bg-white shadow-xs space-y-4">
-                <h3 className="text-lg font-bold text-[#0F172A]">What You'll Master</h3>
+              <div className="p-6 rounded-lg border border-[#E2E8F0] bg-white shadow-xs space-y-4">
+                <h3 className="text-base font-bold text-[#111827]">What You'll Master</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {course.whatYouWillLearn.map((item: string, i: number) => (
                     <div key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-[#64748B]">
@@ -450,8 +460,8 @@ export default function CourseDetailsClient({
 
             {/* Course Description & Syllabus Overview */}
             {course.description && (
-              <div className="p-6 sm:p-8 rounded-xl border border-[#E2E8F0] bg-white shadow-xs space-y-4">
-                <h3 className="text-lg font-bold text-[#0F172A]">Course Overview & Detailed Syllabus</h3>
+              <div className="p-6 rounded-lg border border-[#E2E8F0] bg-white shadow-xs space-y-4">
+                <h3 className="text-base font-bold text-[#111827]">Course Overview & Detailed Syllabus</h3>
                 <FormattedContentRenderer
                   content={course.description}
                   className="text-slate-800"
@@ -462,7 +472,7 @@ export default function CourseDetailsClient({
             {/* Course Curriculum */}
             <div className="space-y-4">
               <div>
-                <h3 className="text-xl font-bold text-[#0F172A]">Course Curriculum</h3>
+                <h3 className="text-lg font-bold text-[#111827]">Course Curriculum</h3>
                 <p className="text-xs text-[#64748B] mt-1">
                   {course.modules?.length || 0} modules • {course.totalLessonsCount || 0} lessons • {durationHours} hrs total
                 </p>
@@ -475,18 +485,18 @@ export default function CourseDetailsClient({
                   return (
                     <div
                       key={module._id}
-                      className="rounded-xl border border-[#E2E8F0] bg-white overflow-hidden shadow-xs"
+                      className="rounded-lg border border-[#E2E8F0] bg-white overflow-hidden shadow-xs"
                     >
                       <button
                         onClick={() => toggleModule(module._id)}
-                        className="w-full flex items-center justify-between p-4 sm:p-5 text-left hover:bg-slate-50 transition-colors cursor-pointer"
+                        className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
-                          <span className="w-6 h-6 rounded bg-slate-100 text-[#0F172A] flex items-center justify-center text-xs font-mono font-bold">
+                          <span className="w-6 h-6 rounded bg-slate-100 text-[#111827] flex items-center justify-center text-xs font-mono font-bold">
                             {mIdx + 1}
                           </span>
                           <div>
-                            <h4 className="text-sm font-bold text-[#0F172A]">{module.title}</h4>
+                            <h4 className="text-sm font-semibold text-[#111827]">{module.title}</h4>
                             {module.description && (
                               <p className="text-xs text-[#64748B] mt-0.5 line-clamp-1">
                                 {module.description}
@@ -505,18 +515,18 @@ export default function CourseDetailsClient({
                       {isExpanded && (
                         <div className="border-t border-[#E2E8F0] divide-y divide-[#E2E8F0] bg-[#F8FAFC]">
                           <div className="p-3 sm:px-6 bg-slate-50 flex flex-wrap items-center gap-2 sm:gap-3 text-[11px] text-[#64748B]">
-                            <span className="font-bold text-[#172554] uppercase tracking-wider text-[10px]">
+                            <span className="font-bold text-[#111827] uppercase tracking-wider text-[10px]">
                               Module Assets:
                             </span>
-                            <span className="inline-flex items-center gap-1 font-semibold text-[#0F172A] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
+                            <span className="inline-flex items-center gap-1 font-medium text-[#111827] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
                               <Play className="w-3 h-3 text-[#2563EB]" />
                               <span>Video Lecture</span>
                             </span>
-                            <span className="inline-flex items-center gap-1 font-semibold text-[#0F172A] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
-                              <BookOpen className="w-3 h-3 text-[#04AA6D]" />
-                              <span>W3Schools Style Notes</span>
+                            <span className="inline-flex items-center gap-1 font-medium text-[#111827] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
+                              <BookOpen className="w-3 h-3 text-[#0D9488]" />
+                              <span>Course Notes</span>
                             </span>
-                            <span className="inline-flex items-center gap-1 font-semibold text-[#0F172A] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
+                            <span className="inline-flex items-center gap-1 font-medium text-[#111827] bg-white px-2 py-0.5 rounded border border-[#E2E8F0]">
                               <FileText className="w-3 h-3 text-[#DC2626]" />
                               <span>PDF Handbook</span>
                             </span>
@@ -536,13 +546,13 @@ export default function CourseDetailsClient({
                                   ) : lesson.type === "coding" ? (
                                     <Terminal className="w-4 h-4 text-[#16A34A] shrink-0" />
                                   ) : (
-                                    <FileText className="w-4 h-4 text-[#172554] shrink-0" />
+                                    <FileText className="w-4 h-4 text-[#2563EB] shrink-0" />
                                   )}
 
                                   {isClickable ? (
                                     <Link
                                       href={`/learn/${course.slug}/${lesson._id}`}
-                                      className="font-medium text-[#0F172A] hover:text-[#2563EB] transition-colors"
+                                      className="font-medium text-[#111827] hover:text-[#2563EB] transition-colors"
                                     >
                                       {lesson.title}
                                     </Link>
@@ -575,16 +585,16 @@ export default function CourseDetailsClient({
             </div>
 
             {/* Student Reviews */}
-            <div className="p-6 sm:p-8 rounded-xl border border-[#E2E8F0] bg-white shadow-xs space-y-6">
+            <div className="p-6 rounded-lg border border-[#E2E8F0] bg-white shadow-xs space-y-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-lg font-bold text-[#0F172A]">Student Reviews & Ratings</h3>
+                  <h3 className="text-base font-bold text-[#111827]">Student Reviews & Ratings</h3>
                   <p className="text-xs text-[#64748B]">Real reviews from verified enrolled learners</p>
                 </div>
                 {isEnrolled && (
                   <button
                     onClick={() => setReviewModalOpen(true)}
-                    className="px-3 py-1.5 rounded-lg bg-[#172554] text-white text-xs font-semibold hover:bg-[#1E3A8A]"
+                    className="px-3 py-1.5 rounded-lg bg-[#2563EB] text-white text-xs font-semibold hover:bg-blue-700 transition-colors"
                   >
                     Write a Review
                   </button>
@@ -592,17 +602,17 @@ export default function CourseDetailsClient({
               </div>
 
               {reviews.length > 0 ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {reviews.map((r: any) => (
-                    <div key={r._id} className="p-4 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
+                    <div key={r._id} className="p-4 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs text-[#0F172A]">{r.userId?.name || "Student"}</span>
+                        <span className="font-semibold text-xs text-[#111827]">{r.userId?.name || "Student"}</span>
                         <div className="flex items-center gap-1 text-[#D97706] text-xs font-bold">
                           <Star className="w-3.5 h-3.5 fill-current" />
                           <span>{r.rating}.0</span>
                         </div>
                       </div>
-                      <p className="text-xs text-[#64748B] italic">"{r.comment}"</p>
+                      <p className="text-xs text-[#64748B]">"{r.comment}"</p>
                     </div>
                   ))}
                 </div>
@@ -642,11 +652,11 @@ export default function CourseDetailsClient({
         >
           <form onSubmit={handleSubmitReview} className="space-y-4 text-xs">
             <div>
-              <label className="font-semibold text-[#0F172A] block mb-1">Star Rating (1 to 5)</label>
+              <label className="font-semibold text-[#111827] block mb-1">Star Rating (1 to 5)</label>
               <select
                 value={ratingInput}
                 onChange={(e) => setRatingInput(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A]"
+                className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-[#111827] focus:outline-none focus:border-[#2563EB]"
               >
                 <option value={5}>⭐⭐⭐⭐⭐ (5 - Exceptional)</option>
                 <option value={4}>⭐⭐⭐⭐ (4 - Very Good)</option>
@@ -656,28 +666,28 @@ export default function CourseDetailsClient({
               </select>
             </div>
             <div>
-              <label className="font-semibold text-[#0F172A] block mb-1">Your Detailed Feedback</label>
+              <label className="font-semibold text-[#111827] block mb-1">Your Detailed Feedback</label>
               <textarea
                 required
                 rows={4}
                 value={reviewTextInput}
                 onChange={(e) => setReviewTextInput(e.target.value)}
                 placeholder="What did you think of the explanations, exercises, and overall course pace?"
-                className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A] placeholder-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
+                className="w-full px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white text-[#111827] placeholder-[#94A3B8] focus:outline-none focus:border-[#2563EB]"
               />
             </div>
             <div className="pt-2 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setReviewModalOpen(false)}
-                className="px-3.5 py-2 rounded-lg border border-[#E2E8F0] text-[#0F172A] font-semibold"
+                className="px-3.5 py-2 rounded-lg border border-[#E2E8F0] text-[#111827] font-semibold hover:bg-slate-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submittingReview}
-                className="px-4 py-2 rounded-lg bg-[#172554] text-white font-semibold shadow-xs disabled:opacity-50"
+                className="px-4 py-2 rounded-lg bg-[#2563EB] text-white font-semibold shadow-xs hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
                 {submittingReview ? "Submitting..." : "Submit Review"}
               </button>

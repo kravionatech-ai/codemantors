@@ -379,87 +379,86 @@ function AdminDashboardContent() {
         </div>
       )}
 
-      {/* Header Banner */}
-      <div className="bg-[#172554] rounded-2xl p-6 sm:p-8 text-white shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-semibold border border-rose-400/20">
-            <ShieldAlert className="w-3.5 h-3.5" />
-            <span>Platform Operations & Administration</span>
+      {/* 1. Platform Governance Console Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827]">
+              Platform Governance Console
+            </h1>
+            <span className="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-50 text-[#16A34A] border border-emerald-200">
+              Operational
+            </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            CodeMentors Administration Console
-          </h1>
-          <p className="text-sm text-[#94A3B8] max-w-xl leading-relaxed">
-            Manage users, review course submissions, process refunds, view real financial figures, and configure platform settings.
+          <p className="text-xs text-[#64748B]">
+            System administration, course moderation queue, user management, and verified financial telemetry.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-right">
-            <span className="text-[11px] text-[#94A3B8] block">Net Revenue</span>
-            <span className="text-xl font-bold text-white">
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="bg-white border border-[#E2E8F0] rounded-xl px-4 py-2.5 shadow-xs text-right">
+            <span className="text-[10px] uppercase font-semibold text-[#64748B] block">Net Revenue</span>
+            <span className="text-lg font-bold text-[#0D9488]">
               ₹{(stats?.netRevenue || 0).toLocaleString()}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Total Users</span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center">
-              <Users className="w-4 h-4" />
-            </div>
+      {/* 2. Priority Moderation Notification (if pending submissions exist) */}
+      {pendingCourses.length > 0 && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2 text-amber-900 font-semibold">
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+            <span>
+              {pendingCourses.length} {pendingCourses.length === 1 ? "course requires" : "courses require"} administrator review before publishing.
+            </span>
           </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
+          <button
+            onClick={() => setActiveTab("approvals")}
+            className="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-semibold transition-colors cursor-pointer shrink-0 text-center"
+          >
+            Review Moderation Queue
+          </button>
+        </div>
+      )}
+
+      {/* 3. Operational Telemetry Metrics Strip */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Total Registered Users</span>
+          <p className="text-xl font-bold text-[#111827]">
             {stats?.totalUsers || 0}
           </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">
-            {stats?.totalStudents || 0} students, {stats?.totalInstructors || 0} instructors
+          <span className="text-[10px] text-[#64748B] block">
+            {stats?.totalStudents || 0} students • {stats?.totalInstructors || 0} instructors
           </span>
         </div>
 
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Total Courses</span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-[#172554] flex items-center justify-center">
-              <BookOpen className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Course Catalog</span>
+          <p className="text-xl font-bold text-[#111827]">
             {stats?.totalCourses || 0}
           </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">
-            {stats?.publishedCourses || 0} published, {stats?.pendingCourses || 0} pending review
+          <span className="text-[10px] text-[#64748B] block">
+            {stats?.publishedCourses || 0} published • {stats?.pendingCourses || 0} pending review
           </span>
         </div>
 
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Active Enrollments</span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-[#16A34A] flex items-center justify-center">
-              <UserCheck className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Active Enrollments</span>
+          <p className="text-xl font-bold text-[#111827]">
             {stats?.totalEnrollments || 0}
           </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">Student enrollments</span>
+          <span className="text-[10px] text-[#64748B] block">Verified student enrollments</span>
         </div>
 
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-[#64748B]">Gross Volume</span>
-            <div className="w-8 h-8 rounded-lg bg-cyan-50 text-[#06B6D4] flex items-center justify-center">
-              <DollarSign className="w-4 h-4" />
-            </div>
-          </div>
-          <p className="text-2xl font-bold text-[#0F172A] mt-2">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Gross Transaction Volume</span>
+          <p className="text-xl font-bold text-[#111827]">
             ₹{(stats?.grossRevenue || 0).toLocaleString()}
           </p>
-          <span className="text-[11px] text-[#64748B] mt-1 block">
+          <span className="text-[10px] text-[#64748B] block">
             ₹{(stats?.refundedAmount || 0).toLocaleString()} refunded
           </span>
         </div>
@@ -469,60 +468,65 @@ function AdminDashboardContent() {
       <div className="border-b border-[#E2E8F0] flex items-center gap-2 overflow-x-auto">
         <button
           onClick={() => setActiveTab("overview")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "overview"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Overview
         </button>
         <button
-          onClick={() => setActiveTab("users")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === "users"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+          onClick={() => setActiveTab("approvals")}
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+            activeTab === "approvals"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
-          Users ({usersList.length})
+          <span>Moderation Queue</span>
+          {pendingCourses.length > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 text-amber-800 font-bold">
+              {pendingCourses.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab("users")}
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+            activeTab === "users"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
+          }`}
+        >
+          User Management ({usersList.length})
         </button>
         <button
           onClick={() => setActiveTab("courses")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "courses"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Courses ({coursesList.length})
         </button>
         <button
-          onClick={() => setActiveTab("approvals")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
-            activeTab === "approvals"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
-          }`}
-        >
-          Approvals ({pendingCourses.length})
-        </button>
-        <button
           onClick={() => setActiveTab("refunds")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "refunds"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           Refunds ({refundsList.length})
         </button>
         <button
           onClick={() => setActiveTab("settings")}
-          className={`py-3 px-4 text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
+          className={`py-3 px-4 text-xs sm:text-sm font-semibold border-b-2 transition-colors whitespace-nowrap cursor-pointer ${
             activeTab === "settings"
-              ? "border-[#DC2626] text-[#DC2626]"
-              : "border-transparent text-[#64748B] hover:text-[#0F172A]"
+              ? "border-[#2563EB] text-[#2563EB]"
+              : "border-transparent text-[#64748B] hover:text-[#111827]"
           }`}
         >
           System Settings
@@ -535,7 +539,7 @@ function AdminDashboardContent() {
           {/* Quick Approvals Card */}
           <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#0F172A]">Courses Awaiting Moderation</h2>
+              <h2 className="text-base font-bold text-[#111827]">Courses Awaiting Moderation</h2>
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-amber-50 text-[#D97706] border border-amber-200">
                 {pendingCourses.length} pending
               </span>
@@ -545,19 +549,19 @@ function AdminDashboardContent() {
                 {pendingCourses.slice(0, 3).map((c) => (
                   <div key={c._id} className="p-3.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-bold text-[#0F172A]">{c.title}</p>
+                      <p className="text-xs font-bold text-[#111827]">{c.title}</p>
                       <p className="text-[11px] text-[#64748B]">Instructor: {c.instructor?.name || "Instructor"}</p>
                     </div>
                     <div className="flex items-center gap-1.5">
                       <button
                         onClick={() => updateCourseStatus(c._id, "published")}
-                        className="px-2.5 py-1 rounded bg-[#16A34A] text-white text-xs font-semibold hover:bg-emerald-700"
+                        className="px-2.5 py-1 rounded bg-[#16A34A] text-white text-xs font-semibold hover:bg-emerald-700 transition-colors"
                       >
                         Approve
                       </button>
                       <button
                         onClick={() => updateCourseStatus(c._id, "draft")}
-                        className="px-2.5 py-1 rounded bg-slate-200 text-[#0F172A] text-xs font-semibold hover:bg-slate-300"
+                        className="px-2.5 py-1 rounded bg-slate-100 border border-[#E2E8F0] text-[#111827] text-xs font-semibold hover:bg-slate-200 transition-colors"
                       >
                         Reject
                       </button>
@@ -575,7 +579,7 @@ function AdminDashboardContent() {
           {/* Quick Refunds Card */}
           <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-bold text-[#0F172A]">Recent Refund Requests</h2>
+              <h2 className="text-base font-bold text-[#111827]">Recent Refund Requests</h2>
               <span className="text-xs font-semibold px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200">
                 {refundsList.length} total
               </span>
@@ -585,7 +589,7 @@ function AdminDashboardContent() {
                 {refundsList.slice(0, 3).map((r) => (
                   <div key={r._id} className="p-3.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-bold text-[#0F172A]">₹{r.amount} — {r.courseId?.title || "Course"}</p>
+                      <p className="text-xs font-bold text-[#111827]">₹{r.amount} — {r.courseId?.title || "Course"}</p>
                       <p className="text-[11px] text-[#64748B]">Learner: {r.userId?.name || "Student"} ({r.userId?.email || "N/A"})</p>
                     </div>
                     <div>
@@ -624,7 +628,7 @@ function AdminDashboardContent() {
               <select
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
-                className="px-2.5 py-1 text-xs rounded-lg border border-[#E2E8F0] bg-white text-[#0F172A]"
+                className="px-2.5 py-1 text-xs rounded-lg border border-[#E2E8F0] bg-white text-[#111827]"
               >
                 <option value="all">All Roles</option>
                 <option value="student">Student</option>
@@ -635,7 +639,7 @@ function AdminDashboardContent() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-[#0F172A]">
+            <table className="w-full text-left text-xs text-[#111827]">
               <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-semibold">
                 <tr>
                   <th className="py-3 px-4">User</th>
@@ -649,7 +653,7 @@ function AdminDashboardContent() {
                 {filteredUsers.map((u) => (
                   <tr key={u._id} className="hover:bg-slate-50">
                     <td className="py-3 px-4">
-                      <p className="font-semibold text-[#0F172A]">{u.name}</p>
+                      <p className="font-semibold text-[#111827]">{u.name}</p>
                       <p className="text-[11px] text-[#64748B]">{u.email}</p>
                     </td>
                     <td className="py-3 px-4">
@@ -695,12 +699,12 @@ function AdminDashboardContent() {
       {activeTab === "courses" && (
         <div className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs space-y-4 p-5">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-[#0F172A]">All Platform Courses</h2>
+            <h2 className="text-sm font-bold text-[#111827]">All Platform Courses</h2>
             <span className="text-xs text-[#64748B]">{coursesList.length} courses total</span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs text-[#0F172A]">
+            <table className="w-full text-left text-xs text-[#111827]">
               <thead className="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-semibold">
                 <tr>
                   <th className="py-3 px-4">Course</th>
@@ -714,7 +718,7 @@ function AdminDashboardContent() {
                 {coursesList.map((c) => (
                   <tr key={c._id} className="hover:bg-slate-50">
                     <td className="py-3 px-4">
-                      <p className="font-semibold text-[#0F172A]">{c.title}</p>
+                      <p className="font-semibold text-[#111827]">{c.title}</p>
                       <p className="text-[11px] text-[#64748B]">{c.category} • {c.level}</p>
                     </td>
                     <td className="py-3 px-4 text-[#64748B]">
@@ -725,14 +729,14 @@ function AdminDashboardContent() {
                         {c.status}
                       </span>
                     </td>
-                    <td className="py-3 px-4 font-bold text-[#0F172A]">
+                    <td className="py-3 px-4 font-bold text-[#111827]">
                       {c.isFree ? "Free" : `₹${c.price}`}
                     </td>
                     <td className="py-3 px-4 text-right space-x-1.5">
                       {c.status !== "published" && (
                         <button
                           onClick={() => updateCourseStatus(c._id, "published")}
-                          className="px-2 py-1 rounded bg-[#16A34A] text-white text-[11px] font-semibold hover:bg-emerald-700"
+                          className="px-2.5 py-1 rounded bg-[#16A34A] text-white text-[11px] font-semibold hover:bg-emerald-700 transition-colors"
                         >
                           Publish
                         </button>
@@ -740,7 +744,7 @@ function AdminDashboardContent() {
                       {c.status === "published" && (
                         <button
                           onClick={() => updateCourseStatus(c._id, "archived")}
-                          className="px-2 py-1 rounded bg-slate-200 text-[#0F172A] text-[11px] font-semibold hover:bg-slate-300"
+                          className="px-2.5 py-1 rounded bg-slate-100 border border-[#E2E8F0] text-[#111827] text-[11px] font-semibold hover:bg-slate-200 transition-colors"
                         >
                           Archive
                         </button>
@@ -757,7 +761,7 @@ function AdminDashboardContent() {
       {/* Tab: Course Approvals */}
       {activeTab === "approvals" && (
         <div className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs p-6 space-y-4">
-          <h2 className="text-sm font-bold text-[#0F172A]">Courses Pending Administrator Review</h2>
+          <h2 className="text-sm font-bold text-[#111827]">Courses Pending Administrator Review</h2>
           {pendingCourses.length > 0 ? (
             <div className="space-y-4">
               {pendingCourses.map((c) => (
@@ -766,20 +770,20 @@ function AdminDashboardContent() {
                     <span className="text-[10px] font-bold uppercase text-[#D97706] bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
                       Pending Review
                     </span>
-                    <h3 className="text-sm font-bold text-[#0F172A]">{c.title}</h3>
+                    <h3 className="text-sm font-bold text-[#111827]">{c.title}</h3>
                     <p className="text-xs text-[#64748B]">{c.subtitle}</p>
-                    <p className="text-[11px] text-[#94A3B8]">Author: {c.instructor?.name || "Author"} • Price: ₹{c.price}</p>
+                    <p className="text-[11px] text-[#64748B]">Author: {c.instructor?.name || "Author"} • Price: ₹{c.price}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateCourseStatus(c._id, "published")}
-                      className="px-3 py-1.5 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
+                      className="px-3 py-1.5 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors"
                     >
                       Approve & Publish
                     </button>
                     <button
                       onClick={() => updateCourseStatus(c._id, "draft")}
-                      className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-[#0F172A] text-xs font-semibold"
+                      className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-100 text-[#111827] text-xs font-semibold transition-colors"
                     >
                       Request Revisions
                     </button>
@@ -790,7 +794,7 @@ function AdminDashboardContent() {
           ) : (
             <div className="text-center py-12 text-[#64748B] space-y-2">
               <CheckCircle2 className="w-10 h-10 text-[#16A34A] mx-auto" />
-              <p className="text-sm font-bold text-[#0F172A]">Queue Is Empty</p>
+              <p className="text-sm font-bold text-[#111827]">Queue Is Empty</p>
               <p className="text-xs">There are no courses waiting for administrative approval.</p>
             </div>
           )}
@@ -801,7 +805,7 @@ function AdminDashboardContent() {
       {activeTab === "refunds" && (
         <div className="bg-white border border-[#E2E8F0] rounded-xl overflow-hidden shadow-xs p-6 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-[#0F172A]">Refund Processing Queue</h2>
+            <h2 className="text-sm font-bold text-[#111827]">Refund Processing Queue</h2>
             <span className="text-xs text-[#64748B]">Governed by CodeMentors Refund Policy</span>
           </div>
 
@@ -811,7 +815,7 @@ function AdminDashboardContent() {
                 <div key={r._id} className="p-4 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-bold text-[#0F172A]">₹{r.amount}</span>
+                      <span className="text-base font-bold text-[#111827]">₹{r.amount}</span>
                       <span
                         className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded ${
                           r.status === "succeeded"
@@ -824,22 +828,22 @@ function AdminDashboardContent() {
                         {r.status}
                       </span>
                     </div>
-                    <p className="text-xs font-semibold text-[#0F172A]">{r.courseId?.title || "Course"}</p>
+                    <p className="text-xs font-semibold text-[#111827]">{r.courseId?.title || "Course"}</p>
                     <p className="text-xs text-[#64748B]">Requested by: {r.userId?.name || "Student"} ({r.userId?.email || "N/A"})</p>
-                    <p className="text-[11px] text-[#94A3B8] italic">Reason: "{r.reason}"</p>
+                    <p className="text-[11px] text-[#64748B] italic">Reason: "{r.reason}"</p>
                   </div>
 
                   {r.status === "requested" && (
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => openRefundConfirmation(r._id, "approve")}
-                        className="px-3 py-1.5 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs"
+                        className="px-3 py-1.5 rounded-lg bg-[#16A34A] hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors"
                       >
                         Approve Refund
                       </button>
                       <button
                         onClick={() => openRefundConfirmation(r._id, "reject")}
-                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-[#DC2626] text-xs font-semibold"
+                        className="px-3 py-1.5 rounded-lg border border-[#E2E8F0] hover:bg-slate-50 text-[#DC2626] text-xs font-semibold transition-colors"
                       >
                         Reject
                       </button>
@@ -860,14 +864,14 @@ function AdminDashboardContent() {
       {activeTab === "settings" && (
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 sm:p-8 max-w-2xl shadow-xs space-y-6">
           <div>
-            <h2 className="text-base font-bold text-[#0F172A]">Platform Configuration & Security</h2>
+            <h2 className="text-base font-bold text-[#111827]">Platform Configuration & Security</h2>
             <p className="text-xs text-[#64748B]">Global feature flags, security policies, and payment credentials.</p>
           </div>
 
           <div className="space-y-4 text-xs">
             <div className="p-4 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
               <div>
-                <p className="font-semibold text-[#0F172A]">Razorpay Payment Gateway</p>
+                <p className="font-semibold text-[#111827]">Razorpay Payment Gateway</p>
                 <p className="text-[11px] text-[#64748B]">Production test keys configured with HMAC SHA-256 verification</p>
               </div>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#16A34A] border border-emerald-200">
@@ -877,7 +881,7 @@ function AdminDashboardContent() {
 
             <div className="p-4 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
               <div>
-                <p className="font-semibold text-[#0F172A]">JWT Session Authentication</p>
+                <p className="font-semibold text-[#111827]">JWT Session Authentication</p>
                 <p className="text-[11px] text-[#64748B]">HTTP-only cookies with 7-day expiration & strict CSRF lax mode</p>
               </div>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#16A34A] border border-emerald-200">
@@ -887,7 +891,7 @@ function AdminDashboardContent() {
 
             <div className="p-4 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] flex items-center justify-between">
               <div>
-                <p className="font-semibold text-[#0F172A]">Certificate Auto-Issuance Engine</p>
+                <p className="font-semibold text-[#111827]">Certificate Auto-Issuance Engine</p>
                 <p className="text-[11px] text-[#64748B]">Generate unique verifiable codes upon 100% course syllabus completion</p>
               </div>
               <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#16A34A] border border-emerald-200">

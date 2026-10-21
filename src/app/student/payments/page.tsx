@@ -133,8 +133,8 @@ export default function StudentPaymentsPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
         <div>
-          <h1 className="text-2xl font-black text-[#172554] tracking-tight">Payment History & Orders</h1>
-          <p className="text-sm text-[#64748B] mt-1">
+          <h1 className="text-xl font-bold text-[#111827] tracking-tight">Payment History & Orders</h1>
+          <p className="text-xs text-[#64748B] mt-1">
             View your verified payment receipts, Razorpay order IDs, and cancellation status.
           </p>
         </div>
@@ -149,13 +149,13 @@ export default function StudentPaymentsPage() {
       {payments.length === 0 ? (
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center shadow-xs">
           <CreditCard className="w-12 h-12 text-[#94A3B8] mx-auto mb-4" />
-          <h3 className="text-base font-bold text-[#172554]">No Payment Transactions Found</h3>
+          <h3 className="text-sm font-bold text-[#111827]">No Payment Transactions Found</h3>
           <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1 mb-6">
             You haven't made any course purchases yet. Free courses do not require payment receipts.
           </p>
           <Link
             href="/courses"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold shadow-xs transition-colors"
           >
             Explore Courses
           </Link>
@@ -183,14 +183,14 @@ export default function StudentPaymentsPage() {
 
                   return (
                     <tr key={p._id} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="py-3.5 px-4 font-mono text-[11px] text-[#0F172A]">
+                      <td className="py-3.5 px-4 font-mono text-[11px] text-[#111827]">
                         <div>{p.receipt}</div>
                         <div className="text-[#94A3B8] text-[10px]">{p.orderId}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-medium text-[#0F172A] max-w-xs truncate">
+                      <td className="py-3.5 px-4 font-medium text-[#111827] max-w-xs truncate">
                         {course?.title || "Course Enrollment"}
                       </td>
-                      <td className="py-3.5 px-4 font-bold text-[#172554]">
+                      <td className="py-3.5 px-4 font-bold text-[#111827]">
                         ₹{p.amount?.toLocaleString("en-IN")}
                       </td>
                       <td className="py-3.5 px-4 text-[#64748B]">

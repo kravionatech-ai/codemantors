@@ -213,223 +213,101 @@ function InstructorDashboardContent() {
   }
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto">
-      {/* Header Banner */}
-      <div className="bg-[#172554] rounded-2xl p-6 sm:p-8 text-white shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/20 text-[#06B6D4] text-xs font-semibold border border-blue-400/20">
-            <GraduationCap className="w-3.5 h-3.5" />
-            <span>Instructor Studio & Control Center</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Welcome, Professor {user?.name}
+    <div className="space-y-6 max-w-7xl mx-auto">
+      {/* 1. Clean Creator SaaS Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-[#E2E8F0]">
+        <div>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#111827]">
+            Instructor Studio
           </h1>
-          <p className="text-sm text-[#94A3B8] max-w-xl leading-relaxed">
-            Monitor real learner enrollments, manage your course library, broadcast announcements, and track verified learning outcomes.
+          <p className="text-xs text-[#64748B] mt-0.5">
+            Manage your courses, track learner progress, and reply to student feedback.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           <Link
             href="/instructor/courses"
-            className="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-lg border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold text-xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#E2E8F0] bg-white hover:bg-slate-50 text-[#111827] font-semibold text-xs transition-colors"
           >
-            <BookOpen className="w-4 h-4 text-slate-300" />
-            <span>View All Courses</span>
+            <BookOpen className="w-3.5 h-3.5 text-[#64748B]" />
+            <span>All Courses</span>
           </Link>
           <button
             onClick={() => setNewCourseOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-semibold text-xs shadow-xs transition-colors cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            <span>Create New Course</span>
+            <span>Create Course</span>
           </button>
         </div>
       </div>
 
-      {/* Publishing Quota & Policy Card */}
+      {/* 2. Concise Author Quotas & Governance Summary */}
       {limitsUsage && (
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E2E8F0]">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#2563EB] flex items-center justify-center">
-                <Layers className="w-4 h-4" />
-              </div>
-              <div>
-                <h2 className="text-sm font-bold text-[#0F172A]">Publishing Quotas & Author Governance</h2>
-                <p className="text-xs text-[#64748B]">Deterministic server-enforced tier limits</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 flex-wrap">
-              {limitsUsage.requireCourseApproval ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-[#D97706] border border-amber-200">
-                  <ShieldCheck className="w-3 h-3" />
-                  Admin Review Required
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Instant Publishing Enabled
-                </span>
-              )}
-              {limitsUsage.canCreatePaidCourses ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-[#2563EB] border border-blue-200">
-                  <DollarSign className="w-3 h-3" />
-                  Paid Courses: ₹{limitsUsage.minCoursePrice.toLocaleString()} – ₹{limitsUsage.maxCoursePrice.toLocaleString()}
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-50 text-[#64748B] border border-slate-200">
-                  <Lock className="w-3 h-3" />
-                  Free Courses Only
-                </span>
-              )}
-            </div>
+        <div className="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-4 flex-wrap">
+            <span className="font-semibold text-[#111827]">Author Quotas:</span>
+            <span className="text-[#64748B]">
+              Published: <strong className="text-[#111827]">{limitsUsage.activeCourses}/{limitsUsage.maxActiveCourses}</strong>
+            </span>
+            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+            <span className="text-[#64748B]">
+              Drafts: <strong className="text-[#111827]">{limitsUsage.draftCourses}/{limitsUsage.maxDraftCourses}</strong>
+            </span>
+            <span className="text-[#CBD5E1] hidden sm:inline">•</span>
+            <span className="text-[#64748B]">
+              Pricing: <strong className="text-[#111827]">{limitsUsage.canCreatePaidCourses ? `₹${limitsUsage.minCoursePrice.toLocaleString()} – ₹${limitsUsage.maxCoursePrice.toLocaleString()}` : "Free only"}</strong>
+            </span>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Active Published Quota */}
-            <div className="p-3.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#0F172A]">Active Published Courses</span>
-                <span className="font-bold text-[#2563EB]">
-                  {limitsUsage.activeCourses} / {limitsUsage.maxActiveCourses} max
-                </span>
-              </div>
-              <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    limitsUsage.activeCourses >= limitsUsage.maxActiveCourses
-                      ? "bg-[#DC2626]"
-                      : limitsUsage.activeCourses >= limitsUsage.maxActiveCourses * 0.8
-                      ? "bg-[#D97706]"
-                      : "bg-[#2563EB]"
-                  }`}
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.round((limitsUsage.activeCourses / (limitsUsage.maxActiveCourses || 1)) * 100)
-                    )}%`,
-                  }}
-                />
-              </div>
-              <p className="text-[11px] text-[#64748B]">
-                {limitsUsage.activeCourses >= limitsUsage.maxActiveCourses
-                  ? "Quota reached. Please archive existing courses before publishing new ones."
-                  : `${limitsUsage.maxActiveCourses - limitsUsage.activeCourses} published slots remaining.`}
-              </p>
-            </div>
-
-            {/* Draft Courses Quota */}
-            <div className="p-3.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#0F172A]">Draft & Pending Courses</span>
-                <span className="font-bold text-[#172554]">
-                  {limitsUsage.draftCourses} / {limitsUsage.maxDraftCourses} max
-                </span>
-              </div>
-              <div className="w-full bg-[#E2E8F0] rounded-full h-2 overflow-hidden">
-                <div
-                  className={`h-2 rounded-full transition-all ${
-                    limitsUsage.draftCourses >= limitsUsage.maxDraftCourses
-                      ? "bg-[#DC2626]"
-                      : limitsUsage.draftCourses >= limitsUsage.maxDraftCourses * 0.8
-                      ? "bg-[#D97706]"
-                      : "bg-[#172554]"
-                  }`}
-                  style={{
-                    width: `${Math.min(
-                      100,
-                      Math.round((limitsUsage.draftCourses / (limitsUsage.maxDraftCourses || 1)) * 100)
-                    )}%`,
-                  }}
-                />
-              </div>
-              <p className="text-[11px] text-[#64748B]">
-                {limitsUsage.draftCourses >= limitsUsage.maxDraftCourses
-                  ? "Draft limit reached. Please publish or delete inactive drafts."
-                  : `${limitsUsage.maxDraftCourses - limitsUsage.draftCourses} draft slots available.`}
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            {limitsUsage.requireCourseApproval ? (
+              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-50 text-[#D97706] border border-amber-200">
+                Admin Review Required
+              </span>
+            ) : (
+              <span className="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 text-[#16A34A] border border-emerald-200">
+                Instant Publishing Enabled
+              </span>
+            )}
           </div>
         </div>
       )}
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
-        {/* Total Courses */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Total Courses</span>
-            <BookOpen className="w-4 h-4 text-[#2563EB]" />
-          </div>
-          <div className="text-xl font-black text-[#172554]">{stats?.totalCourses || 0}</div>
-          <div className="flex items-center gap-1 text-[10px] text-slate-500 pt-0.5">
-            <span className="text-emerald-700 font-semibold">{stats?.publishedCourses || 0} live</span>
-            <span>•</span>
-            <span className="text-slate-600">{stats?.draftCourses || 0} draft</span>
-          </div>
+      {/* 3. Studio Telemetry Metrics Strip */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Total Courses</span>
+          <div className="text-xl font-bold text-[#111827]">{stats?.totalCourses || 0}</div>
+          <div className="text-[10px] text-[#64748B]">{stats?.publishedCourses || 0} live • {stats?.draftCourses || 0} draft</div>
         </div>
-
-        {/* Active Enrollments */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Enrollments</span>
-            <Users className="w-4 h-4 text-[#06B6D4]" />
-          </div>
-          <div className="text-xl font-black text-[#172554]">{stats?.totalEnrollments || 0}</div>
-          <div className="text-[10px] text-slate-500 pt-0.5 font-medium">
-            {stats?.uniqueStudents || 0} unique students
-          </div>
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Active Learners</span>
+          <div className="text-xl font-bold text-[#111827]">{stats?.totalEnrollments || 0}</div>
+          <div className="text-[10px] text-[#64748B]">{stats?.uniqueStudents || 0} unique students</div>
         </div>
-
-        {/* Completion Rate */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Completion Rate</span>
-            <Award className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-xl font-black text-[#172554]">{stats?.completionRate || 0}%</div>
-          <div className="text-[10px] text-slate-500 pt-0.5 font-medium">
-            {stats?.completedEnrollments || 0} finished courses
-          </div>
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Completion Rate</span>
+          <div className="text-xl font-bold text-[#111827]">{stats?.completionRate || 0}%</div>
+          <div className="text-[10px] text-[#64748B]">{stats?.completedEnrollments || 0} completed</div>
         </div>
-
-        {/* Average Rating */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Average Rating</span>
-            <Star className="w-4 h-4 text-amber-500 fill-current" />
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Avg Rating</span>
+          <div className="text-xl font-bold text-[#111827] flex items-center gap-1">
+            <span>{stats?.averageRating || "5.0"}</span>
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-current" />
           </div>
-          <div className="text-xl font-black text-[#172554]">{stats?.averageRating || "5.0"}</div>
-          <div className="text-[10px] text-slate-500 pt-0.5 font-medium">
-            {recentReviews.length} verified reviews
-          </div>
+          <div className="text-[10px] text-[#64748B]">{recentReviews.length} reviews</div>
         </div>
-
-        {/* Verified Revenue */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Course Revenue</span>
-            <DollarSign className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-xl font-black text-emerald-600">
-            ₹{(stats?.totalRevenue || 0).toLocaleString()}
-          </div>
-          <div className="text-[10px] text-slate-500 pt-0.5 font-medium">Via Razorpay</div>
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Course Revenue</span>
+          <div className="text-xl font-bold text-[#0D9488]">₹{(stats?.totalRevenue || 0).toLocaleString()}</div>
+          <div className="text-[10px] text-[#64748B]">Via Razorpay</div>
         </div>
-
-        {/* Pending / Attention */}
-        <div className="bg-white border border-[#E2E8F0] rounded-xl p-4 shadow-xs space-y-1">
-          <div className="flex items-center justify-between text-slate-500">
-            <span className="text-[11px] font-semibold">Attention Items</span>
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
-          </div>
-          <div className="text-xl font-black text-amber-600">
-            {(attentionCourses.length || 0) + (stats?.unrepliedReviewsCount || 0)}
-          </div>
-          <div className="text-[10px] text-slate-500 pt-0.5 font-medium">
-            {stats?.unrepliedReviewsCount || 0} unreplied reviews
-          </div>
+        <div className="bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-xs space-y-1">
+          <span className="text-[11px] font-medium text-[#64748B] block">Needs Attention</span>
+          <div className="text-xl font-bold text-[#D97706]">{(attentionCourses.length || 0) + (stats?.unrepliedReviewsCount || 0)}</div>
+          <div className="text-[10px] text-[#64748B]">{stats?.unrepliedReviewsCount || 0} unreplied reviews</div>
         </div>
       </div>
 
@@ -466,12 +344,12 @@ function InstructorDashboardContent() {
       <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-[#E2E8F0]">
           <div>
-            <h2 className="text-base font-bold text-[#172554]">Course Performance Comparisons</h2>
-            <p className="text-xs text-[#64748B]">Real-time completion, telemetry, and revenue across your courses</p>
+            <h2 className="text-base font-bold text-[#111827]">Course Management & Telemetry</h2>
+            <p className="text-xs text-[#64748B]">Real-time completion, learners, and revenue across your curriculums</p>
           </div>
           <Link
             href="/instructor/courses"
-            className="text-xs font-semibold text-[#2563EB] hover:text-[#172554] inline-flex items-center gap-1"
+            className="text-xs font-semibold text-[#2563EB] hover:text-blue-700 inline-flex items-center gap-1"
           >
             <span>Manage All Courses</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -479,8 +357,8 @@ function InstructorDashboardContent() {
         </div>
 
         {courseComparisons.length === 0 ? (
-          <div className="text-center py-10 text-slate-500 text-xs">
-            No courses authored yet. Click "Create New Course" above to build your first curriculum.
+          <div className="text-center py-10 text-[#64748B] text-xs">
+            No courses authored yet. Click "Create Course" above to build your first curriculum.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -501,14 +379,14 @@ function InstructorDashboardContent() {
                 {courseComparisons.map((c: any) => (
                   <tr key={c._id} className="hover:bg-slate-50/60 transition-colors">
                     <td className="py-3 px-3">
-                      <div className="font-bold text-[#0F172A]">{c.title}</div>
+                      <div className="font-bold text-[#111827]">{c.title}</div>
                       <div className="text-[10px] text-[#64748B]">
                         {c.totalLessonsCount} lessons • {c.totalDurationMinutes} mins
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="font-medium text-slate-700">{c.format}</span>
-                      <div className="text-[10px] text-slate-500">{c.level}</div>
+                      <span className="font-medium text-[#111827]">{c.format}</span>
+                      <div className="text-[10px] text-[#64748B]">{c.level}</div>
                     </td>
                     <td className="py-3 px-3">
                       <span
@@ -519,32 +397,32 @@ function InstructorDashboardContent() {
                             ? "bg-amber-50 text-amber-700 border border-amber-200"
                             : c.status === "archived"
                             ? "bg-slate-100 text-slate-600 border border-slate-200"
-                            : "bg-blue-50 text-[#172554] border border-blue-200"
+                            : "bg-blue-50 text-[#2563EB] border border-blue-200"
                         }`}
                       >
                         {c.status}
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-semibold text-slate-800">{c.enrolledCount}</td>
+                    <td className="py-3 px-3 font-semibold text-[#111827]">{c.enrolledCount}</td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-16 bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                        <div className="w-16 bg-[#E2E8F0] rounded-full h-1.5 overflow-hidden">
                           <div
                             className="bg-[#2563EB] h-1.5 rounded-full"
                             style={{ width: `${c.completionRate || 0}%` }}
                           />
                         </div>
-                        <span className="text-[10px] font-bold text-slate-700">{c.completionRate}%</span>
+                        <span className="text-[10px] font-bold text-[#111827]">{c.completionRate}%</span>
                       </div>
                     </td>
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 text-amber-500 fill-current" />
-                        <span className="font-bold text-slate-800">{c.ratingAverage}</span>
-                        <span className="text-[10px] text-slate-500">({c.ratingCount})</span>
+                        <span className="font-bold text-[#111827]">{c.ratingAverage}</span>
+                        <span className="text-[10px] text-[#64748B]">({c.ratingCount})</span>
                       </div>
                     </td>
-                    <td className="py-3 px-3 font-semibold text-emerald-700">
+                    <td className="py-3 px-3 font-semibold text-[#0D9488]">
                       ₹{c.revenue.toLocaleString()}
                     </td>
                     <td className="py-3 px-3 text-right">
@@ -557,7 +435,7 @@ function InstructorDashboardContent() {
                         </Link>
                         <Link
                           href={`/instructor/courses/${c._id}/edit`}
-                          className="px-2 py-1 rounded border border-[#E2E8F0] hover:bg-slate-100 text-slate-700 font-semibold text-[11px] transition-colors"
+                          className="px-2 py-1 rounded border border-[#E2E8F0] hover:bg-slate-100 text-[#111827] font-semibold text-[11px] transition-colors"
                         >
                           Settings
                         </Link>
@@ -577,12 +455,12 @@ function InstructorDashboardContent() {
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-2">
-              <Users className="w-4 h-4 text-[#06B6D4]" />
-              <h3 className="text-sm font-bold text-[#172554]">Recent Student Activity</h3>
+              <Users className="w-4 h-4 text-[#2563EB]" />
+              <h3 className="text-sm font-bold text-[#111827]">Recent Student Activity</h3>
             </div>
             <Link
               href="/instructor/enrollments"
-              className="text-xs font-semibold text-[#2563EB] hover:text-[#172554] inline-flex items-center gap-1"
+              className="text-xs font-semibold text-[#2563EB] hover:text-blue-700 inline-flex items-center gap-1"
             >
               <span>View All</span>
               <ArrowRight className="w-3 h-3" />
@@ -636,11 +514,11 @@ function InstructorDashboardContent() {
           <div className="flex items-center justify-between pb-3 border-b border-[#E2E8F0]">
             <div className="flex items-center gap-2">
               <Star className="w-4 h-4 text-amber-500 fill-current" />
-              <h3 className="text-sm font-bold text-[#172554]">Student Reviews & Quick Reply</h3>
+              <h3 className="text-sm font-bold text-[#111827]">Student Reviews & Quick Reply</h3>
             </div>
             <Link
               href="/instructor/reviews"
-              className="text-xs font-semibold text-[#2563EB] hover:text-[#172554] inline-flex items-center gap-1"
+              className="text-xs font-semibold text-[#2563EB] hover:text-blue-700 inline-flex items-center gap-1"
             >
               <span>Feedback Workspace</span>
               <ArrowRight className="w-3 h-3" />
@@ -853,7 +731,7 @@ function InstructorDashboardContent() {
             <button
               type="submit"
               disabled={creatingCourse}
-              className="px-4 py-2 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white font-semibold shadow-xs disabled:opacity-50"
+              className="px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-semibold shadow-xs disabled:opacity-50 cursor-pointer transition-colors"
             >
               {creatingCourse ? "Saving Draft..." : "Create Course"}
             </button>

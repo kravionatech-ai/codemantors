@@ -79,8 +79,8 @@ export default function StudentCertificatesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#E2E8F0]">
         <div>
-          <h1 className="text-2xl font-black text-[#172554] tracking-tight">Earned Certificates</h1>
-          <p className="text-sm text-[#64748B] mt-1">
+          <h1 className="text-xl font-bold text-[#111827] tracking-tight">Earned Certificates</h1>
+          <p className="text-xs text-[#64748B] mt-1">
             Official verifiable credentials issued upon successfully completing courses.
           </p>
         </div>
@@ -96,7 +96,7 @@ export default function StudentCertificatesPage() {
       {certificates.length === 0 ? (
         <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 text-center shadow-xs">
           <Award className="w-12 h-12 text-[#94A3B8] mx-auto mb-4" />
-          <h3 className="text-base font-bold text-[#172554]">No Certificates Earned Yet</h3>
+          <h3 className="text-sm font-bold text-[#111827]">No Certificates Earned Yet</h3>
           <p className="text-xs text-[#64748B] max-w-md mx-auto mt-1 mb-6">
             Complete 100% of curriculum lessons and pass required assessments in eligible courses to earn your official verifiable credential.
           </p>

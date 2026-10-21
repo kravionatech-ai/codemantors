@@ -65,16 +65,16 @@ export default function CourseBasketPage() {
         <div className="pb-4 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs text-[#64748B] mb-1">
-              <Link href="/" className="hover:text-[#172554] transition-colors">Home</Link>
+              <Link href="/" className="hover:text-[#111827] transition-colors">Home</Link>
               <span>/</span>
-              <span className="text-[#0F172A] font-semibold">Course Basket</span>
+              <span className="text-[#111827] font-semibold">Course Basket</span>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#172554] text-[#06B6D4] flex items-center justify-center shadow-xs">
+              <div className="w-10 h-10 rounded-lg bg-blue-50 text-[#2563EB] border border-blue-200 flex items-center justify-center shadow-xs">
                 <ShoppingBag className="w-5 h-5" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-black text-[#172554] tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-bold text-[#111827] tracking-tight">
                   Course Basket
                 </h1>
                 <p className="text-xs sm:text-sm text-[#64748B]">
@@ -99,25 +99,25 @@ export default function CourseBasketPage() {
 
         {items.length === 0 ? (
           /* Empty Basket State */
-          <div className="bg-white border border-[#E2E8F0] rounded-2xl p-12 sm:p-16 text-center shadow-xs max-w-2xl mx-auto">
-            <div className="w-20 h-20 rounded-2xl bg-blue-50 text-[#2563EB] flex items-center justify-center mx-auto mb-5 border border-blue-100 shadow-xs">
-              <ShoppingBag className="w-10 h-10 text-[#2563EB]" />
+          <div className="bg-white border border-[#E2E8F0] rounded-xl p-12 sm:p-16 text-center shadow-xs max-w-2xl mx-auto">
+            <div className="w-16 h-16 rounded-xl bg-blue-50 text-[#2563EB] flex items-center justify-center mx-auto mb-4 border border-blue-100 shadow-xs">
+              <ShoppingBag className="w-8 h-8 text-[#2563EB]" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-black text-[#172554]">Your Course Basket is Empty</h2>
-            <p className="text-xs sm:text-sm text-[#64748B] mt-2 mb-8 max-w-md mx-auto leading-relaxed">
-              Explore our industry-standard software engineering curriculum, practical coding exercises, and verified certification pathways.
+            <h2 className="text-lg sm:text-xl font-bold text-[#111827]">Your Course Basket is Empty</h2>
+            <p className="text-xs sm:text-sm text-[#64748B] mt-1.5 mb-6 max-w-md mx-auto leading-relaxed">
+              Explore our software engineering curriculum, practical coding exercises, and verified certification pathways.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href="/courses"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors"
               >
                 Explore All Courses
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
                 href="/learning-paths"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-[#0F172A] text-xs sm:text-sm font-semibold transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] hover:bg-slate-100 text-[#111827] text-xs sm:text-sm font-semibold transition-colors"
               >
                 <Layers className="w-4 h-4 text-[#2563EB]" />
                 Browse Learning Paths
@@ -137,7 +137,7 @@ export default function CourseBasketPage() {
                 </div>
               )}
 
-              <div className="bg-white border border-[#E2E8F0] rounded-2xl divide-y divide-[#E2E8F0] shadow-xs overflow-hidden">
+              <div className="bg-white border border-[#E2E8F0] rounded-xl divide-y divide-[#E2E8F0] shadow-xs overflow-hidden">
                 {items.map((item) => (
                   <div
                     key={item.courseId}
@@ -148,7 +148,7 @@ export default function CourseBasketPage() {
                         <img
                           src={item.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800&q=80"}
                           alt={item.title}
-                          className="w-24 h-16 sm:w-28 sm:h-20 rounded-xl object-cover border border-[#E2E8F0] shadow-2xs group-hover:opacity-90 transition-opacity"
+                          className="w-24 h-16 sm:w-28 sm:h-20 rounded-lg object-cover border border-[#E2E8F0] shadow-2xs group-hover:opacity-90 transition-opacity"
                         />
                       </Link>
 
@@ -174,14 +174,14 @@ export default function CourseBasketPage() {
 
                         <Link
                           href={`/courses/${item.slug}`}
-                          className="font-bold text-sm sm:text-base text-[#0F172A] hover:text-[#2563EB] transition-colors line-clamp-1 block"
+                          className="font-bold text-sm sm:text-base text-[#111827] hover:text-[#2563EB] transition-colors line-clamp-1 block"
                         >
                           {item.title}
                         </Link>
 
                         <p className="text-xs text-[#64748B] flex items-center gap-1.5">
                           <span>Instructor:</span>
-                          <span className="font-medium text-[#0F172A]">{item.instructorName || "CodeMentors Team"}</span>
+                          <span className="font-medium text-[#111827]">{item.instructorName || "CodeMentors Team"}</span>
                         </p>
                       </div>
                     </div>
@@ -189,7 +189,7 @@ export default function CourseBasketPage() {
                     {/* Price and Remove CTA */}
                     <div className="flex sm:flex-col items-center sm:items-end justify-between w-full sm:w-auto pt-3 sm:pt-0 border-t sm:border-0 border-[#E2E8F0] gap-2">
                       <div className="text-left sm:text-right">
-                        <div className="text-base sm:text-lg font-black text-[#172554]">
+                        <div className="text-base sm:text-lg font-bold text-[#111827]">
                           {item.isFree ? (
                             <span className="text-[#16A34A]">Free</span>
                           ) : (
@@ -222,7 +222,7 @@ export default function CourseBasketPage() {
               </div>
 
               {/* Basket Reassurance Banner */}
-              <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-200 text-xs text-[#172554] flex items-center justify-between gap-4">
+              <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-200 text-xs text-[#111827] flex items-center justify-between gap-4">
                 <div className="flex items-center gap-2 font-medium">
                   <Sparkles className="w-4 h-4 text-[#2563EB] shrink-0" />
                   <span>Adding courses to your basket saves them safely to your account without initiating charges.</span>
@@ -235,8 +235,8 @@ export default function CourseBasketPage() {
 
             {/* Right Column: Order Summary */}
             <div className="lg:col-span-4 space-y-5">
-              <div className="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-xs space-y-6">
-                <h2 className="text-base font-bold text-[#172554] pb-3 border-b border-[#E2E8F0]">
+              <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-6">
+                <h2 className="text-sm font-bold text-[#111827] pb-3 border-b border-[#E2E8F0]">
                   Basket Summary
                 </h2>
 
@@ -244,7 +244,7 @@ export default function CourseBasketPage() {
                 <div className="space-y-3 text-xs">
                   <div className="flex items-center justify-between text-[#64748B]">
                     <span>Original Price ({items.length} items):</span>
-                    <span className="font-semibold text-[#0F172A]">₹{subtotal.toLocaleString("en-IN")}</span>
+                    <span className="font-semibold text-[#111827]">₹{subtotal.toLocaleString("en-IN")}</span>
                   </div>
 
                   {discountAmount > 0 && (
@@ -256,9 +256,9 @@ export default function CourseBasketPage() {
                     </div>
                   )}
 
-                  <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-sm sm:text-base">
-                    <span className="font-bold text-[#172554]">Total Amount:</span>
-                    <span className="text-xl sm:text-2xl font-black text-[#172554]">
+                  <div className="pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-sm">
+                    <span className="font-bold text-[#111827]">Total Amount:</span>
+                    <span className="text-lg font-bold text-[#111827]">
                       ₹{finalTotal.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -267,7 +267,7 @@ export default function CourseBasketPage() {
                 {/* Coupon Code Input */}
                 <div className="pt-2">
                   {coupon ? (
-                    <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
                       <div className="flex items-center gap-2 text-emerald-800">
                         <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
                         <div>
@@ -284,19 +284,19 @@ export default function CourseBasketPage() {
                     </div>
                   ) : (
                     <form onSubmit={handleApplyCoupon} className="space-y-2">
-                      <label className="text-xs font-semibold text-[#0F172A] block">Have a Coupon Code?</label>
+                      <label className="text-xs font-semibold text-[#111827] block">Have a Coupon Code?</label>
                       <div className="flex gap-2">
                         <input
                           type="text"
                           value={couponInput}
                           onChange={(e) => setCouponInput(e.target.value)}
                           placeholder="e.g. WELCOME20"
-                          className="flex-1 px-3 py-2 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-xs focus:outline-hidden focus:border-[#2563EB] uppercase font-mono"
+                          className="flex-1 px-3 py-2 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] text-xs focus:outline-hidden focus:border-[#2563EB] uppercase font-mono text-[#111827]"
                         />
                         <button
                           type="submit"
                           disabled={applyingCoupon || !couponInput.trim()}
-                          className="px-4 py-2 rounded-lg bg-[#172554] hover:bg-[#1E3A8A] text-white text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
+                          className="px-4 py-2 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white text-xs font-semibold transition-colors disabled:opacity-50 cursor-pointer"
                         >
                           {applyingCoupon ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Apply"}
                         </button>
@@ -311,7 +311,7 @@ export default function CourseBasketPage() {
                   <button
                     onClick={() => router.push("/checkout")}
                     disabled={hasAlreadyEnrolledItems || items.length === 0}
-                    className="w-full py-3.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-sm shadow-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                    className="w-full py-3 rounded-lg bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-xs sm:text-sm shadow-xs transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                   >
                     <Lock className="w-4 h-4" />
                     Proceed to Secure Checkout
@@ -334,7 +334,7 @@ export default function CourseBasketPage() {
                     <span>Lifetime access & verifiable certificate</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-[#06B6D4] shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-[#0D9488] shrink-0" />
                     <span>7-day risk-free money-back guarantee</span>
                   </div>
                 </div>
@@ -344,7 +344,7 @@ export default function CourseBasketPage() {
               <div className="text-center">
                 <Link
                   href="/courses"
-                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#64748B] hover:text-[#172554] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#64748B] hover:text-[#111827] transition-colors"
                 >
                   ← Continue Browsing Courses
                 </Link>

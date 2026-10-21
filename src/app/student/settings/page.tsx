@@ -84,19 +84,19 @@ export default function StudentSettingsPage() {
   return (
     <div className="max-w-3xl space-y-6">
       <div className="pb-4 border-b border-[#E2E8F0]">
-        <h1 className="text-2xl font-black text-[#172554] tracking-tight">Account & Profile Settings</h1>
-        <p className="text-sm text-[#64748B] mt-1">
+        <h1 className="text-xl font-bold text-[#111827] tracking-tight">Account & Profile Settings</h1>
+        <p className="text-xs text-[#64748B] mt-1">
           Manage your personal learning credentials, bio, and notification preferences.
         </p>
       </div>
 
       <div className="bg-white border border-[#E2E8F0] rounded-xl p-6 shadow-xs space-y-6">
         <div className="flex items-center gap-4 pb-6 border-b border-[#E2E8F0]">
-          <div className="w-16 h-16 rounded-full bg-[#172554] text-[#06B6D4] flex items-center justify-center text-xl font-bold">
+          <div className="w-14 h-14 rounded-full bg-blue-50 text-[#2563EB] border border-blue-200 flex items-center justify-center text-lg font-bold">
             {user?.name?.charAt(0).toUpperCase() || "S"}
           </div>
           <div>
-            <h3 className="font-bold text-[#0F172A] text-base">{user?.name}</h3>
+            <h3 className="font-bold text-[#111827] text-sm">{user?.name}</h3>
             <p className="text-xs text-[#64748B]">{user?.email}</p>
             <span className="inline-block mt-1 text-[10px] font-semibold uppercase px-2 py-0.5 rounded bg-blue-50 text-[#2563EB] border border-blue-200">
               Role: {user?.role}
@@ -106,19 +106,19 @@ export default function StudentSettingsPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+            <label className="block text-xs font-semibold text-[#111827] mb-1">
               Full Name
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full text-xs px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full text-xs px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[#111827] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+            <label className="block text-xs font-semibold text-[#111827] mb-1">
               Professional Headline / Role
             </label>
             <input
@@ -126,12 +126,12 @@ export default function StudentSettingsPage() {
               value={headline}
               onChange={(e) => setHeadline(e.target.value)}
               placeholder="e.g. Frontend Developer, Computer Science Student"
-              className="w-full text-xs px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[#0F172A] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
+              className="w-full text-xs px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[#111827] focus:outline-hidden focus:ring-1 focus:ring-[#2563EB]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#0F172A] mb-1">
+            <label className="block text-xs font-semibold text-[#111827] mb-1">
               Bio / Learning Goals
             </label>
             <RichTextEditor
