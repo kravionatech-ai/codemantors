@@ -5,6 +5,7 @@ export interface ILearningPath extends Document {
   slug: string;
   description: string;
   icon: string;
+  category: string;
   level: "Beginner" | "Intermediate" | "Advanced" | "All Levels";
   estimatedHours: number;
   courses: Types.ObjectId[];
@@ -20,6 +21,7 @@ const LearningPathSchema = new Schema<ILearningPath>(
     slug: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     description: { type: String, required: true },
     icon: { type: String, default: "Compass" },
+    category: { type: String, default: "Software Engineering", trim: true, index: true },
     level: {
       type: String,
       enum: ["Beginner", "Intermediate", "Advanced", "All Levels"],

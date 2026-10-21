@@ -2680,27 +2680,86 @@ export async function runDatabaseSeed(options: SeedOptions = {}): Promise<SeedRe
     );
 
     // Learning Paths
-    await LearningPath.findOneAndUpdate(
-      { slug: "full-stack-nextjs-architect" },
+    const nodeCourse = courseMap.get("nodejs-express-backend");
+    const restCourse = courseMap.get("rest-api-development");
+    const mongoCourse = courseMap.get("mongodb-database-mastery");
+    const tsCourse = courseMap.get("typescript-essentials");
+    const pythonCourse = courseMap.get("python-programming");
+
+    const learningPathsSeed = [
       {
-        $set: {
-          title: "Full-Stack Next.js Architect Roadmap",
-          slug: "full-stack-nextjs-architect",
-          description: "From modern JavaScript core mechanics to React 19, TypeScript, and full-stack Next.js production deployments.",
-          icon: "Layers",
-          level: "Intermediate",
-          estimatedHours: 65,
-          courses: [jsCourse?._id, reactCourse?._id, nextjsCourse?._id].filter(Boolean),
-          learningObjectives: [
-            "Master modern asynchronous JavaScript",
-            "Build reactive component architectures",
-            "Deploy production Next.js apps with MongoDB",
-          ],
-          isPublished: true,
-        },
+        slug: "full-stack-nextjs-architect",
+        title: "Full-Stack Next.js Architect Roadmap",
+        description: "From modern JavaScript core mechanics to React 19, TypeScript, and full-stack Next.js production deployments.",
+        category: "Full-Stack Development",
+        icon: "Layers",
+        level: "Intermediate",
+        estimatedHours: 65,
+        courses: [jsCourse?._id, reactCourse?._id, nextjsCourse?._id].filter(Boolean),
+        learningObjectives: [
+          "Master modern asynchronous JavaScript and ES6+ features",
+          "Build reactive component architectures in React 19",
+          "Deploy production Next.js apps with MongoDB and Server Actions",
+        ],
+        isPublished: true,
       },
-      { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
-    );
+      {
+        slug: "backend-engineering-rest-apis",
+        title: "Backend Systems & RESTful API Engineering",
+        description: "Architect high-throughput server backends with Node.js, Express, MongoDB aggregation pipelines, and secure REST APIs.",
+        category: "Backend Development",
+        icon: "Terminal",
+        level: "Intermediate",
+        estimatedHours: 45,
+        courses: [nodeCourse?._id, restCourse?._id, mongoCourse?._id].filter(Boolean),
+        learningObjectives: [
+          "Event-driven asynchronous I/O and server architectures in Node.js",
+          "Production REST API design, JWT authentication, and rate limiting",
+          "NoSQL schema design, aggregation pipelines, and indexing with MongoDB",
+        ],
+        isPublished: true,
+      },
+      {
+        slug: "frontend-modern-web-foundation",
+        title: "Modern Web Engineering Foundations",
+        description: "Establish industry-standard software foundations from Git version control and modern JavaScript to strictly typed TypeScript.",
+        category: "Frontend Development",
+        icon: "Code2",
+        level: "Beginner",
+        estimatedHours: 35,
+        courses: [gitCourse?._id, jsCourse?._id, tsCourse?._id].filter(Boolean),
+        learningObjectives: [
+          "Git version control, collaborative branching, and GitHub workflows",
+          "Core JavaScript mechanics, closures, and DOM manipulation",
+          "TypeScript static typing, interfaces, and generic component design",
+        ],
+        isPublished: true,
+      },
+      {
+        slug: "python-programming-automation",
+        title: "Python Programming & System Scripting",
+        description: "Learn Python from the ground up, master clean syntax, build backend integrations, and interface with modern REST APIs.",
+        category: "Python",
+        icon: "FileCode",
+        level: "Beginner",
+        estimatedHours: 28,
+        courses: [pythonCourse?._id, restCourse?._id].filter(Boolean),
+        learningObjectives: [
+          "Core Python syntax, data structures, and object-oriented programming",
+          "Consuming and building HTTP REST APIs with Python",
+          "Automating developer workflows and system scripting",
+        ],
+        isPublished: true,
+      },
+    ];
+
+    for (const lp of learningPathsSeed) {
+      await LearningPath.findOneAndUpdate(
+        { slug: lp.slug },
+        { $set: lp },
+        { upsert: true, returnDocument: "after", setDefaultsOnInsert: true }
+      );
+    }
 
     // Reviews (clearly designated test feedback)
     if (nextjsCourse && studentPriya) {
