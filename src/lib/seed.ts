@@ -84,7 +84,7 @@ export async function runDatabaseSeed(options: SeedOptions = {}): Promise<SeedRe
   // 1. Critical Production Safety Guard
   if (isReset) {
     const isProdEnv = process.env.NODE_ENV === "production";
-    const mongoUri = process.env.MONGODB_URI || "";
+    const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || "";
     const isCloudCluster = mongoUri.includes(".mongodb.net") || mongoUri.includes("prod");
 
     if ((isProdEnv || isCloudCluster) && !forceDev) {

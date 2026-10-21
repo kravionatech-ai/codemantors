@@ -1,13 +1,29 @@
 import bcrypt from "bcryptjs";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || "codementors-secure-production-ready-jwt-secret-key-32-chars-min"
 );
 
 export const AUTH_COOKIE_NAME = "cm_token";
+
+/** Clear the session cookie with the same scope and security attributes used at sign-in. */
+export function clearAuthCookie(response: NextResponse): NextResponse {
+  response.cookies.set({
+    name: AUTH_COOKIE_NAME,
+    value: "",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    expires: new Date(0),
+    maxAge: 0,
+  });
+  response.headers.set("Cache-Control", "no-store, max-age=0");
+  return response;
+}
 
 export type UserRole = "student" | "instructor" | "admin" | "super_admin" | "support";
 

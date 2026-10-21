@@ -31,7 +31,7 @@ export async function seedTestAccounts(options: SeedTestAccountsOptions = {}) {
 
   // 1. Safety check for production environment
   const isProd = process.env.NODE_ENV === "production";
-  const mongoUri = process.env.MONGODB_URI || "";
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || "";
   const isCloudProd = mongoUri.includes(".mongodb.net") && (mongoUri.includes("prod") || mongoUri.includes("live"));
 
   if ((isProd || isCloudProd) && !options.forceDev) {

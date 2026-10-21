@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/db";
-import { getSessionUser } from "@/lib/auth";
+import { AUTH_COOKIE_NAME, clearAuthCookie, getSessionUser, verifyAuthToken } from "@/lib/auth";
 import { User, Enrollment, Notification } from "@/models";
 
 export const dynamic = "force-dynamic";
@@ -9,13 +9,19 @@ export async function GET(req: NextRequest) {
   try {
     const session = await getSessionUser(req);
     if (!session) {
-      return NextResponse.json({ success: false, user: null }, { status: 401 });
+      const response = NextResponse.json({ success: false, user: null }, { status: 401 });
+      const cookieToken = req.cookies.get(AUTH_COOKIE_NAME)?.value;
+      return cookieToken && !(await verifyAuthToken(cookieToken))
+        ? clearAuthCookie(response)
+        : response;
     }
 
     await connectDB();
     const user = await User.findById(session.userId).select("-passwordHash").lean();
     if (!user) {
-      return NextResponse.json({ success: false, user: null }, { status: 404 });
+      return clearAuthCookie(
+        NextResponse.json({ success: false, user: null }, { status: 404 })
+      );
     }
 
     const [unreadNotifications, activeEnrollmentsCount] = await Promise.all([

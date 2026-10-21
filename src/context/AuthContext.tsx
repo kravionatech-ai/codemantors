@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 export interface UserProfile {
@@ -29,12 +29,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const authRevision = useRef(0);
+  const logoutInProgress = useRef(false);
 
-  const refreshUser = async () => {
+  const refreshUser = useCallback(async () => {
+    if (logoutInProgress.current) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
+    const revision = authRevision.current;
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch("/api/auth/me", {
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      if (revision !== authRevision.current || logoutInProgress.current) return;
+
       if (res.ok) {
         const data = await res.json();
+        if (revision !== authRevision.current || logoutInProgress.current) return;
         if (data.success && data.user) {
           setUser(data.user);
         } else {
@@ -44,28 +59,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
       }
     } catch {
-      setUser(null);
+      if (revision === authRevision.current && !logoutInProgress.current) {
+        setUser(null);
+      }
     } finally {
-      setLoading(false);
+      if (revision === authRevision.current && !logoutInProgress.current) {
+        setLoading(false);
+      }
     }
-  };
-
-  useEffect(() => {
-    refreshUser();
   }, []);
 
+  useEffect(() => {
+    void refreshUser();
+    return () => {
+      authRevision.current += 1;
+    };
+  }, [refreshUser]);
+
   const login = (userData: UserProfile) => {
+    authRevision.current += 1;
+    logoutInProgress.current = false;
     setUser(userData);
+    setLoading(false);
   };
 
   const logout = async () => {
+    logoutInProgress.current = true;
+    authRevision.current += 1;
+    setUser(null);
+    setLoading(false);
+
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      const response = await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin",
+        cache: "no-store",
+      });
+      if (!response.ok) {
+        throw new Error(`Logout request failed with status ${response.status}`);
+      }
     } catch (e) {
       console.error("Logout error", e);
     } finally {
+      authRevision.current += 1;
       setUser(null);
-      router.push("/login");
+      router.replace("/login");
       router.refresh();
     }
   };
