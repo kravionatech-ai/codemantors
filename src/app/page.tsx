@@ -7,7 +7,9 @@ import {
   RevealSection,
   StaggerContainer,
   StaggerItem,
+  Card3DTilt,
 } from "@/components/ui/MotionComponents";
+import Hero3DExperience from "@/components/home/Hero3DExperience";
 import FaqAccordion from "@/components/ui/FaqAccordion";
 import {
   Code2,
@@ -456,58 +458,10 @@ export default async function HomePage() {
               </RevealSection>
             </div>
 
-            {/* Right Hero Image Column with Floating Cards */}
+            {/* Right Hero Column: Premium 3D Developer Workstation */}
             <div className="lg:col-span-5 relative flex justify-center">
-              <RevealSection yOffset={24} threshold={0.05} className="w-full max-w-lg lg:max-w-none relative">
-                {/* Developer Visual Container */}
-                <div className="relative rounded-2xl overflow-hidden shadow-xl border border-[#E2E8F0] aspect-[4/3] sm:aspect-[14/11] bg-slate-100">
-                  <img
-                    src="/images/hero-developer.jpg"
-                    alt="Developer coding on laptop with expert mentorship"
-                    className="w-full h-full object-cover object-center"
-                    loading="eager"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#14213D]/20 via-transparent to-transparent pointer-events-none" />
-                </div>
-
-                {/* Floating Card 1: Live Mentorship */}
-                <div className="absolute -top-4 -left-3 sm:top-4 sm:-left-6 p-3 sm:p-3.5 rounded-xl bg-white border border-[#E2E8F0] shadow-lg flex items-center gap-3 z-20">
-                  <div className="space-y-1">
-                    <p className="text-xs font-bold text-[#14213D]">Live Mentorship</p>
-                    <div className="flex items-center gap-2">
-                      <div className="flex -space-x-1.5 overflow-hidden">
-                        <img className="inline-block h-5 w-5 rounded-full ring-2 ring-white object-cover" src="/images/mentor-aman.jpg" alt="Aman" />
-                        <img className="inline-block h-5 w-5 rounded-full ring-2 ring-white object-cover" src="/images/mentor-neha.jpg" alt="Neha" />
-                        <img className="inline-block h-5 w-5 rounded-full ring-2 ring-white object-cover" src="/images/mentor-rohit.jpg" alt="Rohit" />
-                      </div>
-                      <span className="text-[11px] font-medium text-[#64748B]">1:1 Guidance</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Card 2: Structured Learning */}
-                <div className="absolute -bottom-5 sm:bottom-4 left-3 sm:-left-4 p-3.5 sm:p-4 rounded-xl bg-white border border-[#E2E8F0] shadow-lg z-20 space-y-2">
-                  <p className="text-xs font-bold text-[#14213D]">Structured Learning</p>
-                  <div className="space-y-1.5 text-[11px] text-[#64748B]">
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span className="text-[#14213D] font-medium">Watch Lessons</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span className="text-[#14213D] font-medium">Practice & Build</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span className="text-[#14213D] font-medium">Get Certified</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Icon 3: Graduation Cap Badge */}
-                <div className="absolute top-2 right-2 sm:-top-3 sm:-right-3 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#06B6D4] text-white flex items-center justify-center shadow-md z-20">
-                  <GraduationCap className="w-5 h-5 sm:w-6 sm:h-6" />
-                </div>
+              <RevealSection yOffset={20} threshold={0.05} className="w-full max-w-lg lg:max-w-none relative">
+                <Hero3DExperience />
               </RevealSection>
             </div>
           </div>
@@ -585,7 +539,7 @@ export default async function HomePage() {
                 <StaggerItem key={cat.slug}>
                   <Link
                     href={`/courses?category=${encodeURIComponent(cat.name)}`}
-                    className="p-3 sm:p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-xs transition-all flex flex-col items-center text-center h-full group"
+                    className="p-3 sm:p-3.5 rounded-xl border border-[#E2E8F0] bg-white hover:border-[#2563EB] hover:shadow-md hover:-translate-y-1 transition-all flex flex-col items-center text-center h-full group"
                   >
                     <div className={`w-11 h-11 rounded-xl ${cat.bgColor} flex items-center justify-center mb-2.5 group-hover:scale-105 transition-transform`}>
                       <Icon className="w-5 h-5" />
@@ -660,10 +614,30 @@ export default async function HomePage() {
             </Link>
           </div>
 
+          {/* 3D Visual Roadmap Progression Header on Desktop */}
+          <div className="hidden md:flex items-center justify-between max-w-3xl mx-auto mb-10 relative">
+            <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-blue-300 via-blue-600 to-teal-400 -translate-y-1/2 z-0" />
+            {[
+              { step: "01", label: "Full-Stack Foundation" },
+              { step: "02", label: "Backend Systems & Cloud" },
+              { step: "03", label: "Production Engineering" },
+            ].map((node, i) => (
+              <div key={i} className="relative z-10 flex items-center gap-2 bg-white px-3.5 py-1.5 rounded-full border border-[#E2E8F0] shadow-xs">
+                <span className="w-5 h-5 rounded-full bg-[#2563EB] text-white text-[10px] font-bold flex items-center justify-center">
+                  {node.step}
+                </span>
+                <span className="text-xs font-semibold text-[#14213D]">{node.label}</span>
+              </div>
+            ))}
+          </div>
+
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-            {curatedPaths.map((path) => (
+            {curatedPaths.map((path, idx) => (
               <StaggerItem key={path.slug}>
-                <div className="rounded-xl border border-[#E2E8F0] bg-white overflow-hidden shadow-xs hover:border-[#CBD5E1] hover:shadow-sm transition-all flex flex-col justify-between h-full group">
+                <Card3DTilt
+                  className="rounded-xl border border-[#E2E8F0] bg-white overflow-hidden shadow-xs hover:border-[#CBD5E1] hover:shadow-lg transition-all flex flex-col justify-between h-full group"
+                  maxTilt={3.5}
+                >
                   <div>
                     {/* Path Cover Thumbnail */}
                     <div className="relative aspect-video w-full overflow-hidden bg-slate-100">
@@ -681,6 +655,9 @@ export default async function HomePage() {
                           ~{path.estimatedHours} Hours
                         </span>
                       </div>
+                      <div className="absolute top-3 right-3 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[#14264F] text-white shadow-2xs">
+                        Stage 0{idx + 1}
+                      </div>
                     </div>
 
                     {/* Path Content */}
@@ -694,8 +671,8 @@ export default async function HomePage() {
 
                       {/* Highlights */}
                       <div className="space-y-2 pt-2 border-t border-[#E2E8F0]">
-                        {path.highlights.map((h, idx) => (
-                          <div key={idx} className="flex items-center gap-2 text-xs text-[#14213D]">
+                        {path.highlights.map((h, hIdx) => (
+                          <div key={hIdx} className="flex items-center gap-2 text-xs text-[#14213D]">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                             <span>{h}</span>
                           </div>
@@ -713,7 +690,7 @@ export default async function HomePage() {
                       <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
-                </div>
+                </Card3DTilt>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -790,13 +767,16 @@ export default async function HomePage() {
                   const Icon = item.icon;
                   return (
                     <StaggerItem key={idx}>
-                      <div className="p-5 rounded-xl border border-[#E2E8F0] bg-white shadow-xs space-y-3 h-full">
+                      <Card3DTilt
+                        className="p-5 rounded-xl border border-[#E2E8F0] bg-white shadow-xs space-y-3 h-full hover:border-[#CBD5E1] transition-all"
+                        maxTilt={3.5}
+                      >
                         <div className={`w-10 h-10 rounded-lg ${item.color} flex items-center justify-center`}>
                           <Icon className="w-5 h-5" />
                         </div>
                         <h3 className="font-bold text-sm text-[#14213D]">{item.title}</h3>
                         <p className="text-xs text-[#64748B] leading-relaxed">{item.desc}</p>
-                      </div>
+                      </Card3DTilt>
                     </StaggerItem>
                   );
                 })}
@@ -832,7 +812,10 @@ export default async function HomePage() {
           <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {mentors.map((m, idx) => (
               <StaggerItem key={idx}>
-                <div className="p-5 rounded-xl border border-[#E2E8F0] bg-white shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all h-full">
+                <Card3DTilt
+                  className="p-5 rounded-xl border border-[#E2E8F0] bg-white shadow-xs flex flex-col justify-between hover:border-[#CBD5E1] transition-all h-full"
+                  maxTilt={4}
+                >
                   <div>
                     {/* Mentor Photo */}
                     <div className="aspect-square w-full rounded-xl overflow-hidden bg-slate-100 mb-4 border border-[#E2E8F0]">
@@ -864,7 +847,7 @@ export default async function HomePage() {
                       <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
                     </a>
                   </div>
-                </div>
+                </Card3DTilt>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -908,7 +891,10 @@ export default async function HomePage() {
           <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {testimonials.map((t, idx) => (
               <StaggerItem key={idx}>
-                <div className="p-6 rounded-xl border border-[#E2E8F0] bg-white shadow-xs flex flex-col justify-between h-full">
+                <Card3DTilt
+                  className="p-6 rounded-xl border border-[#E2E8F0] bg-white shadow-xs flex flex-col justify-between h-full hover:border-[#CBD5E1] transition-all"
+                  maxTilt={3.5}
+                >
                   <div>
                     {/* Stars */}
                     <div className="flex items-center gap-1 text-amber-500 mb-3 text-sm">
@@ -932,7 +918,7 @@ export default async function HomePage() {
                       <p className="text-[11px] text-[#64748B]">{t.role}</p>
                     </div>
                   </div>
-                </div>
+                </Card3DTilt>
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -994,14 +980,17 @@ export default async function HomePage() {
 
             {/* Right Developer Visual Column */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 max-w-md w-full aspect-[4/3] bg-slate-900">
+              <Card3DTilt
+                className="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 max-w-md w-full aspect-[4/3] bg-slate-900"
+                maxTilt={3}
+              >
                 <img
                   src="/images/cta-developer.jpg"
                   alt="Developer working on laptop"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#14264F]/50 via-transparent to-transparent pointer-events-none" />
-              </div>
+              </Card3DTilt>
             </div>
           </RevealSection>
         </div>

@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Star, Clock, BookOpen, Award, CheckCircle, ShoppingBag, Loader2, Video, FileText, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { cardHoverProps } from "@/lib/motion";
+import { Card3DTilt } from "@/components/ui/MotionComponents";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 
@@ -71,9 +72,9 @@ export default function CourseCard({ course, progress, isEnrolled, continueLesso
   };
 
   return (
-    <motion.div
-      className="group flex flex-col rounded-xl border border-[#E2E8F0] bg-white overflow-hidden hover:border-[#CBD5E1] hover:shadow-xs transition-colors"
-      {...cardHoverProps}
+    <Card3DTilt
+      className="group flex flex-col rounded-xl border border-[#E2E8F0] bg-white overflow-hidden hover:border-[#CBD5E1] hover:shadow-md transition-shadow h-full"
+      maxTilt={4.5}
     >
       {/* Thumbnail */}
       <Link href={destinationHref} className="relative aspect-video w-full overflow-hidden bg-slate-100">
@@ -324,6 +325,6 @@ export default function CourseCard({ course, progress, isEnrolled, continueLesso
           )}
         </div>
       </div>
-    </motion.div>
+    </Card3DTilt>
   );
 }
